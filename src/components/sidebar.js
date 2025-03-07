@@ -7,172 +7,193 @@ import {
   ListItemText,
   Typography,
   Collapse,
+  Divider
 } from "@mui/material";
-import CategoryIcon from '@mui/icons-material/Category';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PersonIcon from "@mui/icons-material/Person";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
+import {
+  Dashboard,
+  EmojiEvents,
+  Category,
+  ExpandMore,
+  ChevronRight,
+  Settings,
+  HelpOutline
+} from "@mui/icons-material";
+import categories from "../services/category.js"
 
 const Sidebar = () => {
-  const [openListCatego, setOpenListCatego] = useState(false);
-
-  const handleListCategoClick = () => {
-    setOpenListCatego(!openListCatego);
-  };
+  const [openCatego, setOpenCatego] = useState(false);
+  
 
   return (
     <Box
       sx={{
         width: 280,
-        height: "calc(100vh - 99px)",
-        backgroundColor: "white",
-        padding: 2,
-        boxShadow: "4px 0 15px rgba(0, 0, 0, 0.05)",
-        overflowY: "auto",
-        transition: "all 0.3s ease",
+        borderRight: '1px solid #f0f0f0',
+        backgroundColor: 'white',
+        padding: '24px 16px',
+        overflowY: 'auto'
       }}
-    >
-      {/* Overview Section */}
-      <Typography 
-        variant="subtitle1" 
-        sx={{ 
-          fontWeight: 600, 
-          mb: 2, 
-          color: "#2d3748",
-          letterSpacing: "0.5px",
-          pl: 1.5
-        }}
-      >
-        Overview
-      </Typography>
       
-      <List sx={{ color: '#4a5568' }}>
-        {/* App Item */}
+    >
+      {/* Logo Section */}
+      <Box sx={{ padding: '0 12px 24px 12px' }}>
+        <Typography variant="h6" sx={{ 
+          fontWeight: 700, 
+          letterSpacing: '-0.5px',
+          color: '#6366f1' // Couleur principale
+        }}>
+          Digital Culture for All
+        </Typography>
+      </Box>
+
+      {/* Overview Section */}
+      <List disablePadding>
         <ListItem 
           button 
-          sx={{
-            borderRadius: "8px",
-            mb: 0.5,
-            '&:hover': {
-              backgroundColor: "#f0f4f9",
-            }
-          }}
+          sx={listItemStyle}
         >
-          <ListItemIcon sx={{ minWidth: "40px" }}>
-            <DashboardIcon sx={{ color: "#4a90e2", fontSize: "24px" }} />
+          <ListItemIcon sx={{ minWidth: '36px' }}>
+            <Dashboard sx={iconStyle} />
           </ListItemIcon>
           <ListItemText 
             primary="App" 
-            primaryTypographyProps={{ 
-              fontWeight: 500, 
-              fontSize: "0.95rem" 
-            }} 
+            primaryTypographyProps={primaryTextStyle} 
           />
         </ListItem>
 
-        {/* Badges Item */}
         <ListItem 
           button 
-          sx={{
-            borderRadius: "8px",
-            mb: 0.5,
-            '&:hover': {
-              backgroundColor: "#f0f4f9",
-            }
-          }}
+          sx={listItemStyle}
         >
-          <ListItemIcon sx={{ minWidth: "40px" }}>
-            <EmojiEventsIcon sx={{ color: "#f6ad55", fontSize: "24px" }} />
+          <ListItemIcon sx={{ minWidth: '36px' }}>
+            <EmojiEvents sx={iconStyle} />
           </ListItemIcon>
           <ListItemText 
             primary="Badges" 
-            primaryTypographyProps={{ 
-              fontWeight: 500, 
-              fontSize: "0.95rem" 
-            }} 
+            primaryTypographyProps={primaryTextStyle} 
           />
         </ListItem>
 
-        {/* Categories Section */}
+        {/* List Cours Section */}
         <ListItem
           button
-          onClick={handleListCategoClick}
-          sx={{
-            borderRadius: "8px",
-            mb: 0.5,
-            '&:hover': {
-              backgroundColor: "#f0f4f9",
-            }
-          }}
+          onClick={() => setOpenCatego(!openCatego)}
+          sx={listItemStyle}
         >
-          <ListItemIcon sx={{ minWidth: "40px" }}>
-            <CategoryIcon sx={{ color: "#48bb78", fontSize: "24px" }} />
+          <ListItemIcon sx={{ minWidth: '36px' }}>
+            <Category sx={iconStyle} />
           </ListItemIcon>
           <ListItemText 
             primary="List Cours" 
-            primaryTypographyProps={{ 
-              fontWeight: 500, 
-              fontSize: "0.95rem" 
-            }} 
+            primaryTypographyProps={primaryTextStyle} 
           />
-          {openListCatego ? 
-            <ExpandLess sx={{ color: "#718096" }} /> : 
-            <ExpandMore sx={{ color: "#718096" }} />}
+          {openCatego ? 
+            <ExpandMore sx={{ color: '#94a3b8', fontSize: 20 }} /> : 
+            <ChevronRight sx={{ color: '#94a3b8', fontSize: 20 }} />}
         </ListItem>
-        
-        {/* Nested Categories */}
-        <Collapse in={openListCatego} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {[
-              "Littératie numérique (Digital Literacy)",
-              "Médias et communication numérique",
-              "Art et design numérique",
-              "Cybersécurité et éthique numérique",
-              "Sociologie et anthropologie numérique",
-              "Programmation et technologies émergentes",
-              "Storytelling et création de contenu",
-              "Économie numérique et e-commerce",
-              "Propriété intellectuelle et droit numérique",
-              "Éducation et pédagogie numérique",
-              "Environnement et numérique",
-              "Recherche numérique et data science"
-            ].map((text) => (
+
+        <Collapse in={openCatego} timeout="auto" unmountOnExit>
+          <List disablePadding sx={{ pl: 3 }}>
+            {categories.map((item) => (
               <ListItem 
+                key={item}
                 button 
-                key={text}
-                sx={{ 
-                  pl: 4,
-                  borderRadius: "6px",
+                sx={{
+                  ...nestedItemStyle,
                   '&:hover': {
-                    backgroundColor: "#ebf8ff",
-                  },
-                  '&:before': {
-                    content: '""',
-                    position: 'absolute',
-                    left: 24,
-                    height: '60%',
-                    width: '2px',
-                    bgcolor: '#cbd5e0'
+                    backgroundColor: '#f8fafc',
+                    borderLeft: '2px solid #e2e8f0'
                   }
                 }}
               >
                 <ListItemText 
-                  primary={text} 
-                  primaryTypographyProps={{ 
-                    fontSize: "0.875rem",
-                    color: "#4a5568",
-                    fontWeight: 500 
+                  primary={item} 
+                  primaryTypographyProps={{
+                    fontSize: 13.5,
+                    fontWeight: 500,
+                    color: '#475569'
                   }} 
+                  sx={{ pl: 2.5 }}
                 />
               </ListItem>
             ))}
           </List>
         </Collapse>
       </List>
+
+      <Divider sx={{ my: 2, borderColor: '#f1f5f9' }} />
+
+      {/* Settings Section */}
+      <List disablePadding>
+        <ListItem 
+          button 
+          sx={listItemStyle}
+        >
+          <ListItemIcon sx={{ minWidth: '36px' }}>
+            <Settings sx={iconStyle} />
+          </ListItemIcon>
+          <ListItemText 
+            primary="Settings" 
+            primaryTypographyProps={primaryTextStyle} 
+          />
+        </ListItem>
+
+        <ListItem 
+          button 
+          sx={listItemStyle}
+        >
+          <ListItemIcon sx={{ minWidth: '36px' }}>
+            <HelpOutline sx={iconStyle} />
+          </ListItemIcon>
+          <ListItemText 
+            primary="Aide" 
+            primaryTypographyProps={primaryTextStyle} 
+          />
+        </ListItem>
+      </List>
     </Box>
   );
+};
+
+// Styles réutilisables
+const listItemStyle = {
+  borderRadius: '8px',
+  mb: '4px',
+  '&:hover': {
+    backgroundColor: '#f8fafc',
+    borderLeft: '3px solid #e2e8f0'
+  },
+  '&.Mui-selected': {
+    backgroundColor: '#f1f5f9',
+    borderLeft: '3px solid #6366f1',
+    '&:hover': { backgroundColor: '#f1f5f9' }
+  }
+};
+
+const iconStyle = { 
+  fontSize: 20, 
+  color: '#64748b' 
+};
+
+const primaryTextStyle = { 
+  fontSize: 14, 
+  fontWeight: 600,
+  color: '#1e293b'
+};
+
+const nestedItemStyle = {
+  borderRadius: '6px',
+  mb: '2px',
+  pl: '24px',
+  position: 'relative',
+  '&:before': {
+    content: '""',
+    position: 'absolute',
+    left: '12px',
+    height: '60%',
+    width: '2px',
+    bgcolor: '#cbd5e1'
+  }
 };
 
 export default Sidebar;
