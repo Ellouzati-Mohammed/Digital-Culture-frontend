@@ -1,6 +1,12 @@
+import React from "react";
 import Navbar from './components/navbar';
 import SideBar from './components/sidebar';
 import './styles/App.css';
+import AllCategoriesCard from "./components/categories";
+
+
+
+
 
 function App() {
   return (
@@ -21,17 +27,8 @@ function App() {
         minHeight: 0 
       }}>
         <SideBar/>
-        <div style={{
-          flex: 1,
-          backgroundColor: "red",
-          overflow: 'hidden',
-          height: '100%', 
-          display: 'flex',
-          alignItems: 'center', 
-          justifyContent: 'center'
-        }}>
-          gg
-        </div>
+        
+        <AllCategoriesCard/>
       </main>
     </div>
   );

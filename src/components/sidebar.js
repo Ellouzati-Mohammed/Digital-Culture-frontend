@@ -18,7 +18,7 @@ import {
   Settings,
   HelpOutline
 } from "@mui/icons-material";
-import categories from "../services/category.js"
+import { categories, categoryImages } from "../services/categoryService.js"
 
 const Sidebar = () => {
   const [openCatego, setOpenCatego] = useState(false);

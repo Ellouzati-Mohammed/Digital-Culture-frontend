@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import LogoutIcon from '@mui/icons-material/Logout';
+
 const Navbar = () => {
   return (
     <AppBar
