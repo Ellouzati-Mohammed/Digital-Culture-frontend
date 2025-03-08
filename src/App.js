@@ -2,10 +2,7 @@ import React from "react";
 import Navbar from './components/navbar';
 import SideBar from './components/sidebar';
 import './styles/App.css';
-import AllCategoriesCard from "./components/categories";
-
-
-
+import HomeScreen from "./screens/Home";
 
 
 function App() {
@@ -27,8 +24,8 @@ function App() {
         minHeight: 0 
       }}>
         <SideBar/>
-        
-        <AllCategoriesCard/>
+
+        <HomeScreen/>
       </main>
     </div>
   );
