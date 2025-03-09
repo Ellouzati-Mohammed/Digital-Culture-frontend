@@ -84,7 +84,7 @@ const Sidebar = () => {
             <Category sx={iconStyle} />
           </ListItemIcon>
           <ListItemText 
-            primary="List Cours" 
+            primary="List des Domaines" 
             primaryTypographyProps={primaryTextStyle} 
           />
           {openCatego ? 

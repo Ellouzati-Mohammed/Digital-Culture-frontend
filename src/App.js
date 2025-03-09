@@ -3,6 +3,7 @@ import Navbar from './components/navbar';
 import SideBar from './components/sidebar';
 import './styles/App.css';
 import HomeScreen from "./screens/Home";
+import DomainPage from "./screens/DomainPage";
 
 
 function App() {
@@ -19,16 +20,16 @@ function App() {
       <main style={{ 
         flex: 1,
         display: 'flex',
-        backgroundColor: "black",
         overflow: 'hidden',
         minHeight: 0 
       }}>
         <SideBar/>
 
-        <HomeScreen/>
+        <DomainPage/>
       </main>
     </div>
   );
 }
 
 export default App;
+

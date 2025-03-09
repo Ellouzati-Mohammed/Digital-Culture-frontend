@@ -86,50 +86,9 @@ const CategoryCard=(categoryId,categoryTitle,categoryImg)=>{
 }
 
 function AllCategoriesCard() {
-  return (
-    <Box sx={{
-      flex: 1,
-      backgroundColor: "#f8fafc",
-      overflowY: 'auto',
-      padding: "24px"
-    }}>
-      {/* En-tête */}
-      <Box sx={{ 
-        mb: 4, 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        position: 'relative',
-        overflow: 'hidden',
-        borderRadius: '16px',
-        height: '200px',
-        background: 'linear-gradient(135deg,rgba(41, 44, 255, 0.35) 0%,rgb(0, 255, 106),rgb(200, 92, 246),rgb(255, 0, 179) 100%)'
-      }}>
-        <Box sx={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.3)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          color: 'white',
-          textAlign: 'center',
-          p: 4
-        }}>
-          <Typography variant="h2" sx={{ fontWeight: 800, mb: 2 }}>
-            Explorez le Monde Numérique
-          </Typography>
-          <Typography variant="h5" sx={{ opacity: 0.9 }}>
-            {categories.length} Domaines de Connaissance à Découvrir
-          </Typography>
-        </Box>
-      </Box>
+  return (<>
+  
 
-      {/* Grille des catégories */}
       <Box sx={{ 
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
@@ -140,20 +99,8 @@ function AllCategoriesCard() {
         ))}
       </Box>
 
-      {/* Section statistiques */}
-      <Box sx={{ 
-        mt: 4,
-        padding: "24px",
-        backgroundColor: "white",
-        borderRadius: "16px",
-        boxShadow: 3
-      }}>
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-          📈 Votre Progression
-        </Typography>
-       <GroupedUserStatsProgression/>
-      </Box>
-    </Box>
+      
+    </>
   );
 }
 
