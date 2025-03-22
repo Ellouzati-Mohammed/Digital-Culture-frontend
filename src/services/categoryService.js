@@ -53,5 +53,14 @@ const categories = [
     'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg'
   ];
   
-  
-export { categories, categoryImages };
+  const selectedDomain = {
+    name: "Cybersécurité et éthique numérique",
+    description: "Maîtrisez les fondamentaux de la sécurité informatique et des enjeux éthiques du numérique",
+    stats: {
+      courses: 15,
+      duration: "28h",
+      difficulty: "Intermédiaire"
+    }
+  };
+
+export { categories, categoryImages, selectedDomain };

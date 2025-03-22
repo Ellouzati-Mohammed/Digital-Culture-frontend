@@ -1,5 +1,8 @@
 // screens/DomainPage.js
 import React from 'react';
+import { selectedDomain } from '../services/categoryService';
+import courses from '../services/DomainCours';
+import { Link } from "react-router-dom";
 import { 
   Box, 
   Typography, 
@@ -27,41 +30,7 @@ import {
 
 const DomainPage = () => {
   // Données de démonstration
-  const domain = {
-    name: "Cybersécurité et éthique numérique",
-    description: "Maîtrisez les fondamentaux de la sécurité informatique et des enjeux éthiques du numérique",
-    stats: {
-      courses: 15,
-      duration: "28h",
-      difficulty: "Intermédiaire"
-    }
-  };
-
-  const courses = [
-    { 
-      title: "Introduction à la cybersécurité", 
-      duration: "2h30", 
-      lessons: 12,
-      difficulty: "Débutant",
-      badge: "Nouveau",
-      type: "video"
-    },
-    { 
-      title: "Cryptographie moderne", 
-      duration: "4h", 
-      lessons: 18,
-      difficulty: "Avancé",
-      type: "article"
-    },
-    { 
-      title: "Ethique des données", 
-      duration: "3h15", 
-      lessons: 15,
-      difficulty: "Intermédiaire",
-      badge: "Certifié",
-      type: "course"
-    }
-  ];
+  
 
   return (
     <Container 
@@ -82,7 +51,7 @@ const DomainPage = () => {
         borderRadius: 4,
         p: 4,
         mb: 4,
-        boxShadow: 3,
+        boxShadow: 1,
         background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)'
       }}>
         <Grid container spacing={3} alignItems="center">
@@ -96,7 +65,7 @@ const DomainPage = () => {
               gap: 2
             }}>
               <VideoLibrary sx={{ color: '#6366f1', fontSize: 40 }} />
-              {domain.name}
+              {selectedDomain.name}
             </Typography>
             
             <Typography variant="body1" sx={{ 
@@ -104,23 +73,23 @@ const DomainPage = () => {
               mb: 3,
               fontSize: '1.1rem'
             }}>
-              {domain.description}
+              {selectedDomain.description}
             </Typography>
             
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Chip 
                 icon={<Schedule sx={{ color: '#6366f1' }} />} 
-                label={`${domain.stats.duration} total`}
+                label={`${selectedDomain.stats.duration} total`}
                 sx={{ bgcolor: '#eef2ff' }}
               />
               <Chip
                 icon={<School sx={{ color: '#10b981' }} />} 
-                label={domain.stats.difficulty}
+                label={selectedDomain.stats.difficulty}
                 sx={{ bgcolor: '#f0fdf4' }}
               />
               <Chip
                 icon={<EmojiEvents sx={{ color: '#d97706' }} />} 
-                label={`${domain.stats.courses} cours`}
+                label={`${selectedDomain.stats.courses} cours`}
                 sx={{ bgcolor: '#ffedd5' }}
               />
             </Box>
@@ -132,7 +101,7 @@ const DomainPage = () => {
       <List sx={{ 
         bgcolor: 'background.paper', 
         borderRadius: 4,
-        boxShadow: 3
+        boxShadow: 1
       }}>
         {courses.map((course, index) => (
           <React.Fragment key={course.title}>

@@ -3,6 +3,7 @@ import { Box, Typography, Chip } from "@mui/material";
 import { EmojiEvents } from "@mui/icons-material";
 import  { categories, categoryImages } from "../services/categoryService.js";
 import GroupedUserStatsProgression from "../statistics/UserStatistics/UserStatsProgression.jsx";
+import { Link } from "react-router-dom";
 
 const CategoryCard=(categoryId,categoryTitle,categoryImg)=>{
         return <Box 
@@ -95,7 +96,13 @@ function AllCategoriesCard() {
         gap: "24px"
       }}>
         {categories.map((category, index) => (
-          CategoryCard(index,category)
+         <Link 
+         key={category.id} 
+         to={`/domain`} 
+         style={{ textDecoration: "none" }}
+       >
+         {CategoryCard(index, category)}
+       </Link>
         ))}
       </Box>
 

@@ -27,11 +27,12 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-        width: 280,
+        width: "18%",
+        maxWidth:280,
         borderRight: '1px solid #f0f0f0',
         backgroundColor: 'white',
         padding: '24px 16px',
-        overflowY: 'auto'
+        overflowY: 'auto',
       }}
       
     >

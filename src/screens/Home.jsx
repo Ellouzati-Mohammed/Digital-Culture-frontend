@@ -1,6 +1,6 @@
 import AllCategoriesCard from "../components/categories";
 import GroupedUserStatsProgression from "../statistics/UserStatistics/UserStatsProgression";
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip,Button } from "@mui/material";
 
 
 function HomeScreen(){
@@ -10,7 +10,7 @@ function HomeScreen(){
             flex: 1,
             backgroundColor: "#f8fafc",
             overflowY: 'auto',
-            padding: "24px"
+            p: "24px"
         }}>
             <Box sx={{ 
         mb: 4, 
