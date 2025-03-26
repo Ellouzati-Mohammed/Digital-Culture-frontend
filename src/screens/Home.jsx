@@ -1,54 +1,23 @@
-import AllCategoriesCard from "../components/categories";
+import AllDomainsCard from "../components/DomainCard";
 import GroupedUserStatsProgression from "../statistics/UserStatistics/UserStatsProgression";
 import { Box, Typography, Chip,Button } from "@mui/material";
-
+import {HomeBox,WelcomCardMotivation,WelcomCardMotivationBox,WelcomCardMotivationTitle,WelcomCardMotivationText} from '../styles/HomeStyle'
 
 function HomeScreen(){
     return (
         
-        <Box sx={{
-            flex: 1,
-            backgroundColor: "#f8fafc",
-            overflowY: 'auto',
-            p: "24px"
-        }}>
-            <Box sx={{ 
-        mb: 4, 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        position: 'relative',
-        overflow: 'hidden',
-        borderRadius: '16px',
-        height: '200px',
-        background: 'linear-gradient(135deg,rgba(41, 44, 255, 0.35) 0%,rgb(0, 255, 106),rgb(200, 92, 246),rgb(255, 0, 179) 100%)'
-      }}>
-        <Box sx={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.3)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          color: 'white',
-          textAlign: 'center',
-          p: 4
-        }}>
-          <Typography variant="h2" sx={{ fontWeight: 800, mb: 2 }}>
-            Explorez le Monde Numérique
-          </Typography>
-          <Typography variant="h5" sx={{ opacity: 0.9 }}>
-            10 Domaines de Connaissance à Découvrir
-          </Typography>
-        </Box>
-      </Box>
-      
-            <AllCategoriesCard/>
-            
+        <Box sx={HomeBox}>
+            <Box sx={WelcomCardMotivation}>
+              <Box sx={WelcomCardMotivationBox}>
+                <Typography variant="h2" sx={WelcomCardMotivationTitle}>
+                  Explorez le Monde Numérique
+                </Typography>
+                <Typography variant="h5" sx={WelcomCardMotivationText}>
+                  10 Domaines de Connaissance à Découvrir
+                </Typography>
+              </Box>
+            </Box>
+            <AllDomainsCard/>
         </Box>
     )
 }

@@ -1,4 +1,6 @@
+
 export default function TimeDifference(dateString) {
+  
     const givenDate = new Date(dateString); // Convertit la date donnée
     const now = new Date(); // Date actuelle
     const diffInMs = givenDate - now; // Différence en millisecondes
