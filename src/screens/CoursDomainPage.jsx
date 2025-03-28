@@ -38,7 +38,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import TimeDifference from '../services/TimeDifference';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import { Link } from "react-router-dom";
-import {ActivityboxStyle,ActivityContainer,ActivityTime,ActivityTimeTxt,ActivityTiltleTxt,ActivitySubTiltleTxt,TaskIcon,RadioBut,CoursDomainContainer
+import {CoursboxStyle,CoursContainer,CoursTime,CoursTimeTxt,CoursTiltleTxt,CoursSubTiltleTxt,TaskIcon,RadioBut,CoursDomainContainer
   ,SelectedDomainContainer,SelectedDomainGlobalInfoText,SelectedDomainGlobalInfoItem,SelectedDomainchildrenContainer,SelectedDomainLevel,SelectedDomainnbrCours,
   SelectedDomainTitle,SelectedDomainDescription,SelectedDomainGlobalInfoContainer,CoursDomainSecContainer,AllCoursContainer,AllCoursSecContainer,HeaderTitle
   } from '../styles/CoursDomainPageStyle'
@@ -83,15 +83,13 @@ const SelctedDomainInfo=({nbrCours,domain_Title,domain_Description,last_Update,p
                       <PeopleOutlineIcon sx={{fontSize: "16px",mr:'4px'}}/>
                       {nbr_Enroll} enrolled
                     </Typography>
-                    
                 </Box>
               </Box>
-            
             </Box>
   );
 }
 
-const Activitie =({type,estimated_time_minutes,activitie_title,activitie_subtitle,isCompleted})=>{
+const Cours =({cours_id,type,estimated_time_minutes,cours_title,cours_subtitle,isCompleted})=>{
 
   const completeIcon=(isCompleted)=>{
    if(isCompleted)
@@ -101,22 +99,24 @@ const Activitie =({type,estimated_time_minutes,activitie_title,activitie_subtitl
   }
 
   return(  
-            <Box sx={ActivityboxStyle(isCompleted)}>
+    <Link to={`/DomainsCours/Activities/${cours_id}`} style={{ textDecoration: 'none' }}>
+            <Box sx={CoursboxStyle(isCompleted)}>
               {completeIcon(isCompleted)}
-              <Box sx={ActivityContainer}>
-                <Box sx={ActivityTime}>
-                    <Typography variant="span" sx={ActivityTimeTxt}>
+              <Box sx={CoursContainer}>
+                <Box sx={CoursTime}>
+                    <Typography variant="span" sx={CoursTimeTxt}>
                         {estimated_time_minutes}min
                     </Typography>
                 </Box>
-                  <Typography variant="h3" sx={ActivityTiltleTxt}>
-                    {activitie_title}
+                  <Typography variant="h3" sx={CoursTiltleTxt}>
+                    {cours_title}
                   </Typography>
-                  <Typography variant="p" sx={ActivitySubTiltleTxt}>
-                    {activitie_subtitle}
+                  <Typography variant="p" sx={CoursSubTiltleTxt}>
+                    {cours_subtitle}
                   </Typography>
               </Box>
             </Box>
+    </Link>
     );
 }
 export default function CoursDomain() {
@@ -140,11 +140,11 @@ export default function CoursDomain() {
                   <Typography variant="h2" sx={HeaderTitle}>
                     Course Content
                   </Typography>
-                  <Activitie type={'Article'} estimated_time_minutes={15} activitie_title={'Introduction to JavaScript'} activitie_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={true} />
-                  <Activitie type={'Video'} estimated_time_minutes={15} activitie_title={'Introduction to JavaScript'} activitie_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={true} />
+                  <Cours type={'Article'} cours_id={1} estimated_time_minutes={15} cours_title={'Introduction to JavaScript'} cours_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={true} />
+                  <Cours type={'Video'} cours_id={2} estimated_time_minutes={15} cours_title={'Introduction to JavaScript'} cours_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={true} />
              
-                  <Activitie type={'PDF'} estimated_time_minutes={15} activitie_title={'Introduction to JavaScript'} activitie_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={false} />
-                  <Activitie type={'Quiz'} estimated_time_minutes={15} activitie_title={'Introduction to JavaScript'} activitie_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={true} />
+                  <Cours type={'PDF'} cours_id={3} estimated_time_minutes={15} cours_title={'Introduction to JavaScript'} cours_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={false} />
+                  <Cours type={'Quiz'} cours_id={4} estimated_time_minutes={15} cours_title={'Introduction to JavaScript'} cours_subtitle={'An overview of JavaScript and its role in web development.'} isCompleted={true} />
              
               </Box>
           </Box>

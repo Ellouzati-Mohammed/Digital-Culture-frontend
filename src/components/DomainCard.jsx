@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Chip } from "@mui/material";
 import { EmojiEvents } from "@mui/icons-material";
-import  { categories, categoryImages } from "../services/categoryService.js";
+import  { domain, domainImages } from "../services/DomainService.js";
 import GroupedUserStatsProgression from "../statistics/UserStatistics/UserStatsProgression.jsx";
 import { Link } from "react-router-dom";
 import { 
@@ -18,12 +18,12 @@ import {
   LinkCardDomain 
 } from '../styles/DomainCardStyle.js'
 
-const CategoryCard=(categoryId,categoryTitle,categoryImg)=>{
-        return <Box key={categoryId} sx={CardContainerStyle} >
-            <Box sx={HeaderSecCard(categoryId,categoryImages)}>
+const DomainCard=(domainId,domainTitle,domainImg)=>{
+        return <Box key={domainId} sx={CardContainerStyle} >
+            <Box sx={HeaderSecCard(domainId,domainImages)}>
               <Box sx={HeaderSecCardContainer}>
                 <Typography variant="h5" sx={DomainTitle}>
-                  {categoryTitle.split('(')[0].trim()}
+                  {domainTitle.split('(')[0].trim()}
                 </Typography>
               </Box>
             </Box>
@@ -37,30 +37,32 @@ const CategoryCard=(categoryId,categoryTitle,categoryImg)=>{
                   sx={NbrCoursChip}
                 />
                 <Chip
-                  label={categoryId % 3 === 0 ? "Débutant" : categoryId % 3 === 1 ? "Intermédiaire" : "Avancé"}
+                  label={domainId % 3 === 0 ? "Débutant" : domainId % 3 === 1 ? "Intermédiaire" : "Avancé"}
                   size="small"
                   sx={LevelCoursChip}
                 />
               </Box>
               
               <Typography variant="body2" sx={DomainDecriptionCard}>
-                Maîtrisez les concepts clés du {categoryTitle.toLowerCase()} grâce à des projets pratiques et des études de cas réels.
+                Maîtrisez les concepts clés du {domainTitle.toLowerCase()} grâce à des projets pratiques et des études de cas réels.
               </Typography>
             </Box>
           </Box> ;
 }
 
 function AllDomainsCard() {
+  
   return (<>
   
       <Box sx={AllDomainBox}>
-        {categories.map((category, index) => (
+        {domain.map((domain, index) => (
+          
          <Link 
-         key={category.id} 
-         to={`/cours-domain`} 
+         key={domain.id} 
+         to={`/DomainsCours/${domain.id}`} 
          style={LinkCardDomain}
        >
-         {CategoryCard(index, category)}
+         {DomainCard(index, domain.title)}
        </Link>
         ))}
       </Box>

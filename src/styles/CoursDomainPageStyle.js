@@ -10,7 +10,7 @@ const SelectedDomainDescription={color:'rgb(75,85,99)',fontFamily:'inherit'}
 const SelectedDomainGlobalInfoContainer={display:'flex',flexDirection:'row',color:'#64748B'}
 const SelectedDomainGlobalInfoItem={mr:3}
 const SelectedDomainGlobalInfoText={ display: "flex", alignItems: "center",fontSize:'0.9rem',fontFamily:'inherit' }
-const ActivityboxStyle = (isCompleted) => ({
+const CoursboxStyle = (isCompleted) => ({
   padding: '1rem',
   border: '1px solid rgb(229,231,235)',
   color: '#64748B',
@@ -31,11 +31,11 @@ const ActivityboxStyle = (isCompleted) => ({
   }
 });
 
-const ActivityContainer ={display:'flex',flexDirection:'column',pl:2,flexGrow: 1}
-const ActivityTime={fontSize:'17px',display:'flex',flexDirection:'row',justifyContent:'space-between',mb:1}
-const ActivityTimeTxt={fontFamily: 'inherit'}
-const ActivityTiltleTxt={fontFamily: 'inherit',fontSize:' 1.125rem',fontWeight:'500',mb:1}
-const ActivitySubTiltleTxt={fontFamily: 'inherit',fontSize:'.875rem'}
+const CoursContainer ={display:'flex',flexDirection:'column',pl:2,flexGrow: 1}
+const CoursTime={fontSize:'17px',display:'flex',flexDirection:'row',justifyContent:'space-between',mb:1}
+const CoursTimeTxt={fontFamily: 'inherit'}
+const CoursTiltleTxt={fontFamily: 'inherit',fontSize:' 1.125rem',fontWeight:'500',mb:1}
+const CoursSubTiltleTxt={fontFamily: 'inherit',fontSize:'.875rem'}
 const TaskIcon={fontSize:'27px',color:'#22C55E'}
 const RadioBut={fontSize:'27px'}
 
@@ -55,7 +55,7 @@ const AllCoursContainer={py:'32px',display:'flex',flexDirection:'column',backgro
 const AllCoursSecContainer={backgroundColor:'#FFFFFF',p:'24px',display:'flex',flexDirection:'column',borderRadius:3,boxShadow: "0px 1px 3px rgba(86, 86, 86, 0.1)",}
 const HeaderTitle={fontWeight: '600',fontFamily: 'inherit',fontSize: '1.25rem',mb:'24px'}
 
-export {ActivityboxStyle,ActivityContainer,ActivityTime,ActivityTimeTxt,ActivityTiltleTxt,ActivitySubTiltleTxt,
+export {CoursboxStyle,CoursContainer,CoursTime,CoursTimeTxt,CoursTiltleTxt,CoursSubTiltleTxt,
   TaskIcon,RadioBut,CoursDomainContainer,SelectedDomainContainer,SelectedDomainGlobalInfoText,SelectedDomainGlobalInfoItem,
   SelectedDomainchildrenContainer,SelectedDomainLevel,SelectedDomainnbrCours,SelectedDomainTitle,SelectedDomainDescription,
   SelectedDomainGlobalInfoContainer,CoursDomainSecContainer,AllCoursContainer,AllCoursSecContainer,HeaderTitle

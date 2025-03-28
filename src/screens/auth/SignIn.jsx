@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container,Card,CardMedia,Box, CardContent, ButtonGroup,Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
@@ -14,63 +14,63 @@ import { Link } from 'react-router-dom';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
 
-const SignUpForm = () => {
+import {EmailInput,PasswordInput} from '../../components/ValidationInputs'
+
+
+const SignInForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
+
+  const validateForm = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) newErrors.email = "L'email est requis";
+    else if (!emailRegex.test(email)) newErrors.email = "Veuillez entrer une adresse email valide";
+
+    if (!password) newErrors.password = "Le mot de passe est requis";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const isValid = validateForm();
+
+    if (isValid) {
+      console.log("Formulaire valide, soumission...");
+      // Ici, on peut ajouter l'appel API pour soumettre le formulaire
+    }
+  };
+
   return (
-    <Box sx={formContainerStyle}>
+    <Box sx={formContainerStyle} component="form" onSubmit={handleSubmit}>
       <Typography variant="h5" sx={titleStyle}>Sign In</Typography>
       <Typography variant="span" sx={subtitleStyle}>Log in to access your courses</Typography>
-      <form>
-        <Box sx={{ marginBottom: 1 }}>
-          <Typography variant="span" sx={inputLabel}>Email</Typography>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="your@email.com"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailOutlinedIcon sx={inputIcon} />
-                </InputAdornment>
-              ),
-              sx: inputStyle
-            }}
-            sx={textFieldStyle}
-          />
-        </Box>
-        <Box sx={{ marginBottom: 1 }}>
-          <Typography component="span" sx={inputLabel}>Password</Typography>
-          <TextField
-            fullWidth
-            variant="outlined"
-            type="password"
-            placeholder="••••••••"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockOutlinedIcon sx={inputIcon} />
-                </InputAdornment>
-              ),
-              sx: inputStyle,
-            }}
-            sx={textFieldStyle}
-          />
-        </Box>
-        <Button sx={submitButtonStyle}>Submit</Button>
-        <Box sx={MotivationLabel}>
-          <Typography variant="span" fontSize='1rem'>
-            Don't have an account yet?
-          </Typography>
-          <Link to={'/'} style={linkStyle}>Sign Up</Link>
-        </Box>
-      </form>
+
+      <EmailInput email={email} setEmail={setEmail} error={errors.email} />
+
+      <PasswordInput password={password} setPassword={setPassword} error={errors.password} />
+
+      <Button type="submit" sx={submitButtonStyle}>Submit</Button>
+
+      <Box sx={MotivationLabel}>
+        <Typography variant="span" fontSize="1rem">
+          Don't have an account yet?
+        </Typography>
+        <Link to={'/'} style={linkStyle}>Sign Up</Link>
+      </Box>
     </Box>
   );
 };
 
-export default function SignUp() {
+
+export default function SignIn() {
   return (
     <Container disableGutters maxWidth={false} sx={AuthContainer}>
-      <SignUpForm />
+      <SignInForm />
     </Container>
   );
 }

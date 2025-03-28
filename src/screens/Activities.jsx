@@ -10,17 +10,17 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Radio, RadioGroup, FormControlLabel, FormControl } from "@mui/material";
 import{ vidioBoxStyle,
   quizBoxStyle,
-  questionBoxStyle,
+  questionBoxStyle, 
   formControlLabelStyle,
   submitButtonStyle,
-  coursContainerStyle,
+  activitieContainerStyle,
   cardBoxStyle,
   cardHeaderStyle,
   cardBodyStyle,
   buttonGroupStyle,
   resourceBoxHeaderStyle,
   pdfLinkBoxStyle,
-  SelctedResponse,submitButtonStyleBox,NavButton,resourceBoxContainer,resourceIcon,pdfResource} from "../styles/CoursStyle"
+  SelctedResponse,submitButtonStyleBox,NavButton,resourceBoxContainer,resourceIcon,pdfResource,QuizQuestion,disabledStyleQuiz} from "../styles/ActivitiesStyle"
 
 const Vidio=()=>{
      return (
@@ -43,25 +43,31 @@ const Vidio=()=>{
 
 const Quiz=()=>{
   const [selectedValue, setSelectedValue] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const trueValue='string'; //ici le correct response
+
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
+ 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+     setIsSubmitted(true);
+  };
   return (
-    <Box sx={quizBoxStyle}>
-        <Typography variant="h6" sx={{fontFamily:'inherit',fontSize:'16px'}} gutterBottom>
-          <Box
-            sx={questionBoxStyle}
-          >
+    <Box sx={quizBoxStyle} component="form" onSubmit={handleSubmit} >
+        <Typography variant="h6" sx={QuizQuestion} gutterBottom>
+          <Box sx={questionBoxStyle}>
             1
           </Box>
           Which of the following is NOT a JavaScript data type?
         </Typography>
-        <FormControl component="fieldset" fullWidth>
+        <FormControl component="fieldset" fullWidth sx={isSubmitted?disabledStyleQuiz:{}}>
             <RadioGroup value={selectedValue} onChange={handleChange}>
               {["string", "boolean", "float", "object"].map((option) => (
                 <Box
                   key={option}
-                  sx={SelctedResponse(selectedValue,option)}
+                  sx={SelctedResponse(selectedValue, option, isSubmitted, trueValue)}
                 >
                   <FormControlLabel value={option} control={<Radio />} label={option.charAt(0).toUpperCase() + option.slice(1)} componentsProps={{ typography: formControlLabelStyle }} sx={{ width: "100%"}} />
                 </Box>
@@ -70,7 +76,7 @@ const Quiz=()=>{
               
             </RadioGroup>
             <Box sx={submitButtonStyleBox}>
-              <Button sx={submitButtonStyle}>
+              <Button type="submit" sx={submitButtonStyle}>
                 submit
               </Button>
             </Box>
@@ -78,12 +84,12 @@ const Quiz=()=>{
     </Box>
   );
 }
-function Cours() {
+function Activitie() {
  
   return (
     <Container
       disableGutters={true}
-      sx={coursContainerStyle}
+      sx={activitieContainerStyle}
     >
       <Box sx={cardBoxStyle}>
         <Typography variant="h2"sx={cardHeaderStyle}>
@@ -147,5 +153,5 @@ function Cours() {
     </Container>
   );
 }
-export default Cours;
+export default Activitie;
 

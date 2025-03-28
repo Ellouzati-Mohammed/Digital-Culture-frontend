@@ -1,5 +1,6 @@
 const listItemStyle = {
   borderRadius: '8px',
+  cursor:'pointer',
   mb: '4px',
   '&:hover': {
     backgroundColor: '#f8fafc',

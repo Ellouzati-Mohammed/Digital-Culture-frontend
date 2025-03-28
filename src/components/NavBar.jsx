@@ -20,8 +20,10 @@ import {
   AvatarStyle,
   FullName,
   LogOutButton,
-  LogOutIcon
+  LogOutIcon,
+  BoxLogo
 } from '../styles/NavBarStyle'
+import { Link } from "react-router-dom";
 
 
 const Navbar = () => {
@@ -29,17 +31,21 @@ const Navbar = () => {
     <AppBar sx={AppBareStyle}>
       <Toolbar>
         <Box sx={FirstSec}>
-          <DesktopWindowsOutlinedIcon sx={Logo} />
-          <Typography variant="h6" sx={LogoTitle}>
-            Digital-Culture
-          </Typography>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Box sx={BoxLogo}>
+                <DesktopWindowsOutlinedIcon sx={Logo} />
+                <Typography variant="h6" sx={LogoTitle}>
+                  Digital-Culture
+                </Typography>
+              </Box>
+          </Link>
           <Box sx={Navigation}>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Button color="inherit" sx={SelectedButtonNavigation}>
               Home
             </Button>
-            <Button color="inherit" sx={ButtonNavigation}>
-              Classes
-            </Button>
+          </Link>
+            
             <Button color="inherit" sx={ButtonNavigation}>
               Plans
             </Button>
@@ -50,17 +56,18 @@ const Navbar = () => {
         </Box>
 
         <Box sx={SecondSec}>
-          <Box sx={PersonalInfo}>
-            <Avatar
-              src="https://via.placeholder.com/150"
-              alt="User Avatar"
-              sx={AvatarStyle}
-            />
-            {/* Name */}
-            <Typography variant="body1" sx={FullName}>
-              Mohammed Ellouzati
-            </Typography>
-          </Box>
+        <Link to="/Profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Box sx={PersonalInfo}>
+              <Avatar
+                src="https://via.placeholder.com/150"
+                alt="User Avatar"
+                sx={AvatarStyle}
+              />
+              <Typography variant="body1" sx={FullName}>
+                Mohammed Ellouzati
+              </Typography>
+            </Box>
+        </Link>
           {/* Log Out Button */}
           <Button variant="outlined" sx={LogOutButton} >
             <LogoutIcon sx={LogOutIcon}/>

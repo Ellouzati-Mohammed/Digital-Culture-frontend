@@ -14,9 +14,12 @@ const AppBareStyle={
   const Navigation={ display: "flex", gap: 3, ml: 5,fontweight: '500',fontSize:'.875rem' }
   const SelectedButtonNavigation={ fontWeight: "bold", color: "#333",fontFamily: 'inherit' }
   const ButtonNavigation={ color: "#666",fontFamily: 'inherit' }
-  
+  const BoxLogo={display:'flex',flexDirection:'row',alignItems:'center',cursor:'pointer'}
   const SecondSec={ display: "flex", alignItems: "center", gap: 2, }
-  const PersonalInfo={display: "flex",flexDirection:'row',alignItems: "center"}
+  const PersonalInfo={display: "flex",flexDirection:'row',alignItems: "center",p:1,borderRadius:3 ,cursor: 'pointer', 
+    '&:hover': {
+      backgroundColor: '#E1EEFF' 
+    }}
   const AvatarStyle={
     width: '2rem',
     fontweight: 500,
@@ -45,6 +48,7 @@ const AppBareStyle={
     AvatarStyle,
     FullName,
     LogOutButton,
-    LogOutIcon
+    LogOutIcon,
+    BoxLogo
   };
     

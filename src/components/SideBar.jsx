@@ -18,7 +18,7 @@ import {
   Settings,
   HelpOutline
 } from "@mui/icons-material";
-import { categories, categoryImages } from "../services/categoryService.js"
+import { domain, domainImages } from "../services/DomainService.js"
 import { 
   listItemStyle, 
   iconStyle, 
@@ -35,10 +35,10 @@ import {
   DividerStyle 
 } from '../styles/SideBar.js'
 
-
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-  const [openCatego, setOpenCatego] = useState(false);
+  const [openDomain, setOpenDomain] = useState(false);
   
   return (
     <Box sx={SideBarContainer}>
@@ -49,42 +49,42 @@ const Sidebar = () => {
       </Box>
 
       <List disablePadding>
-        <ListItem button  sx={listItemStyle}>
-          <ListItemIcon sx={IconSideStyle}>
-            <Dashboard sx={iconStyle} />
-          </ListItemIcon>
-          <ListItemText primary="App" primaryTypographyProps={primaryTextStyle} />
-        </ListItem>
+        <Link to='/'  style={{ textDecoration: "none" }} >
+          <ListItem button  sx={listItemStyle}>
+            <ListItemIcon sx={IconSideStyle}>
+              <Dashboard sx={iconStyle} />
+            </ListItemIcon>
+            <ListItemText primary="Domains Page" primaryTypographyProps={primaryTextStyle} />
+          </ListItem>
+        </Link>
 
-        <ListItem button sx={listItemStyle}>
-          <ListItemIcon sx={IconSideStyle}>
-            <EmojiEvents sx={iconStyle} />
-          </ListItemIcon>
-          <ListItemText primary="Badges"  primaryTypographyProps={primaryTextStyle} />
-        </ListItem>
-
-        <ListItem button onClick={() => setOpenCatego(!openCatego)} sx={listItemStyle} >
+        <ListItem button onClick={() => setOpenDomain(!openDomain)} sx={listItemStyle} >
           <ListItemIcon sx={IconSideStyle}>
             <Category sx={iconStyle} />
           </ListItemIcon>
           <ListItemText primary="List des Domaines" primaryTypographyProps={primaryTextStyle} />
-          {openCatego ? 
+          {openDomain ? 
             <ExpandMore sx={FetchIcon} /> : 
             <ChevronRight sx={FetchIcon} />}
         </ListItem>
 
-        <Collapse in={openCatego} timeout="auto" unmountOnExit>
+        <Collapse in={openDomain} timeout="auto" unmountOnExit>
           <List disablePadding sx={DomainList}>
-            {categories.map((item) => (
+            {domain.map((domain) => (
               <ListItem 
-                key={item}
+                key={domain.id}
                 button 
                 sx={ListItemMap}
               >
-                <ListItemText 
-                  primary={item} 
-                  {...listItemTextStyle} 
-                />
+                 <Link 
+                    to={`/DomainsCours/${domain.id}`} 
+                    style={{ textDecoration: "none" }} 
+                  >
+                    <ListItemText 
+                      primary={domain.title} 
+                      {...listItemTextStyle} 
+                    />
+                </Link>
               </ListItem>
             ))}
           </List>

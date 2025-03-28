@@ -10,6 +10,7 @@ const vidioBoxStyle = {
     width: '70%'
   };
   
+  const QuizQuestion={fontFamily:'inherit',fontSize:'16px'}
   const quizBoxStyle = {
     border: 'solid 2px #E5E7EB',
     borderRadius: 2,
@@ -31,15 +32,28 @@ const vidioBoxStyle = {
     marginRight: "8px",
   };
 
-  const SelctedResponse= (selectedValue, option) =>({
+  const SelctedResponse = (selectedValue, option, isSubmitted, trueValue) => ({
     border: "1px solid #E5E7EB",
-    borderRadius: 1,
+    borderRadius: 2,
     px: 2,
     my: 1,
-    borderRadius:2,
-    backgroundColor: selectedValue === option ? "#E0F7FA" : "white",
+    backgroundColor: isSubmitted
+      ? option === trueValue
+        ? "#4CAF50A3" // Vert pour la bonne réponse
+        : selectedValue === option
+        ? "#EF5350A3" // Rouge pour une mauvaise réponse sélectionnée
+        : "white"
+      : selectedValue === option
+      ? "#E0F7FA" // Bleu clair pour la sélection avant soumission
+      : "white",
     transition: "background-color 0.3s",
   });
+  const disabledStyleQuiz = {
+    pointerEvents: "none", 
+    opacity: 0.5, 
+    userSelect: "none", 
+  };
+
   
   const formControlLabelStyle = {
     fontSize: "15px"
@@ -57,7 +71,7 @@ const vidioBoxStyle = {
     mx:2
    };
   
-  const coursContainerStyle = {
+  const activitieContainerStyle = {
     overflow: 'scroll',
     display: "flex",
     flexDirection: "column",
@@ -152,7 +166,7 @@ const vidioBoxStyle = {
     questionBoxStyle,
     formControlLabelStyle,
     submitButtonStyle,
-    coursContainerStyle,
+    activitieContainerStyle,
     cardBoxStyle,
     cardHeaderStyle,
     cardBodyStyle,
@@ -165,5 +179,7 @@ const vidioBoxStyle = {
     resourceBoxContainer,
     resourceIcon,
     pdfResource,
+    QuizQuestion,
+    disabledStyleQuiz
   };
     

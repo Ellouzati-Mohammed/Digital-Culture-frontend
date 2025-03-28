@@ -1,21 +1,20 @@
 
-
-const categories = [
-    "Littératie numérique (Digital Literacy)",
-    "Médias et communication numérique",
-    "Art et design numérique",
-    "Cybersécurité et éthique numérique",
-    "Sociologie et anthropologie numérique",
-    "Programmation et technologies émergentes",
-    "Storytelling et création de contenu",
-    "Économie numérique et e-commerce",
-    "Propriété intellectuelle et droit numérique",
-    "Éducation et pédagogie numérique",
-    "Environnement et numérique",
-    "Recherche numérique et data science"
-  ];
+const domain = [
+  { id: 1, title: "Littératie numérique (Digital Literacy)" },
+  { id: 2, title: "Médias et communication numérique" },
+  { id: 3, title: "Art et design numérique" },
+  { id: 4, title: "Cybersécurité et éthique numérique" },
+  { id: 5, title: "Sociologie et anthropologie numérique" },
+  { id: 6, title: "Programmation et technologies émergentes" },
+  { id: 7, title: "Storytelling et création de contenu" },
+  { id: 8, title: "Économie numérique et e-commerce" },
+  { id: 9, title: "Propriété intellectuelle et droit numérique" },
+  { id: 10, title: "Éducation et pédagogie numérique" },
+  { id: 11, title: "Environnement et numérique" },
+  { id: 12, title: "Recherche numérique et data science" }
+];
   // Liste d'images thématiques (remplacez par vos URLs)
-  const categoryImages = [
+  const domainImages = [
     // Littératie numérique
     'https://img.freepik.com/photos-gratuite/jeune-femme-utilisant-appareils-technologiques_23-2149207357.jpg',
     
@@ -63,4 +62,4 @@ const categories = [
     }
   };
 
-export { categories, categoryImages, selectedDomain };
+export { domain, domainImages, selectedDomain };
