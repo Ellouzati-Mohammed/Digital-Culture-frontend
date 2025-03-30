@@ -1,4 +1,6 @@
+
 const AppBareStyle={
+    zIndex:2,
     elevation:0,
     position:'sticky',
     borderBottom: "1px solid #e0e0e0",

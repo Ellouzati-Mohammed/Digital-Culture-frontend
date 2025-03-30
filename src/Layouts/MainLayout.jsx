@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 const MainLayout = ({ children }) => {
     const location = useLocation();
-
+    const role='admin'
     const hideLayout = ["/signup", "/signin"].includes(location.pathname.toLowerCase());
   return (
     <div className="App" style={AppContainer}>
@@ -15,27 +15,12 @@ const MainLayout = ({ children }) => {
         <Navbar />
       </header>}
       <main style={AppMain}>
-      {!hideLayout &&<Sidebar />}
+      {!hideLayout && role !== 'admin' && <Sidebar />}
+
         {children}
       </main>
     </div>
   );
 };
-const MainLayout2 = ({ children }) => {
-  const location = useLocation();
 
-  const hideLayout = ["/signup", "/signin"].includes(location.pathname.toLowerCase());
-return (
-  <div className="App" style={AppContainer}>
-    {!hideLayout &&<header className="App-header">
-      <Navbar />
-    </header>}
-    <main style={AppMain}>
-
-      {children}
-    </main>
-  </div>
-);
-};
-
-export default MainLayout2;
+export default MainLayout;

@@ -18,18 +18,17 @@ import {EmailInput,PasswordInput} from '../../components/ValidationInputs'
 
 
 const SignInForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({password:"",email:""});
   const [errors, setErrors] = useState({ email: "", password: "" });
 
   const validateForm = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!email) newErrors.email = "L'email est requis";
-    else if (!emailRegex.test(email)) newErrors.email = "Veuillez entrer une adresse email valide";
+    if (!formData.email) newErrors.email = "L'email est requis";
+    else if (!emailRegex.test(formData.email)) newErrors.email = "Veuillez entrer une adresse email valide";
 
-    if (!password) newErrors.password = "Le mot de passe est requis";
+    if (!formData.password) newErrors.password = "Le mot de passe est requis";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,9 +49,18 @@ const SignInForm = () => {
       <Typography variant="h5" sx={titleStyle}>Sign In</Typography>
       <Typography variant="span" sx={subtitleStyle}>Log in to access your courses</Typography>
 
-      <EmailInput email={email} setEmail={setEmail} error={errors.email} />
+      <EmailInput 
+         email={formData.email} 
+         setEmail={(newEmail) => 
+          setFormData(prev => ({ ...prev, email: newEmail }))
+         } 
+        error={errors.email} />
 
-      <PasswordInput password={password} setPassword={setPassword} error={errors.password} />
+      <PasswordInput 
+         password={formData.password} 
+         setPassword={(newPassword) => 
+          setFormData(prev => ({ ...prev, password: newPassword }))
+        } error={errors.password} />
 
       <Button type="submit" sx={submitButtonStyle}>Submit</Button>
 

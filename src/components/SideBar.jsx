@@ -18,7 +18,7 @@ import {
   Settings,
   HelpOutline
 } from "@mui/icons-material";
-import { domain, domainImages } from "../services/DomainService.js"
+import { domain } from "../services/DomainService.js";
 import { 
   listItemStyle, 
   iconStyle, 
@@ -33,13 +33,17 @@ import {
   ListItemMap, 
   listItemTextStyle, 
   DividerStyle 
-} from '../styles/SideBar.js'
-
+} from '../styles/SideBar.js';
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const [openDomain, setOpenDomain] = useState(false);
   
+  // Toggle domain list visibility
+  const handleDomainToggle = () => {
+    setOpenDomain((prevState) => !prevState);
+  };
+
   return (
     <Box sx={SideBarContainer}>
       <Box sx={SideBarTitle}>
@@ -49,8 +53,8 @@ const Sidebar = () => {
       </Box>
 
       <List disablePadding>
-        <Link to='/'  style={{ textDecoration: "none" }} >
-          <ListItem button  sx={listItemStyle}>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <ListItem button sx={listItemStyle} aria-label="Go to domains page">
             <ListItemIcon sx={IconSideStyle}>
               <Dashboard sx={iconStyle} />
             </ListItemIcon>
@@ -58,11 +62,11 @@ const Sidebar = () => {
           </ListItem>
         </Link>
 
-        <ListItem button onClick={() => setOpenDomain(!openDomain)} sx={listItemStyle} >
+        <ListItem button onClick={handleDomainToggle} sx={listItemStyle} aria-expanded={openDomain}>
           <ListItemIcon sx={IconSideStyle}>
             <Category sx={iconStyle} />
           </ListItemIcon>
-          <ListItemText primary="List des Domaines" primaryTypographyProps={primaryTextStyle} />
+          <ListItemText primary="List of Domains" primaryTypographyProps={primaryTextStyle} />
           {openDomain ? 
             <ExpandMore sx={FetchIcon} /> : 
             <ChevronRight sx={FetchIcon} />}
@@ -70,21 +74,19 @@ const Sidebar = () => {
 
         <Collapse in={openDomain} timeout="auto" unmountOnExit>
           <List disablePadding sx={DomainList}>
-            {domain.map((domain) => (
+            {domain.map((domainItem) => (
               <ListItem 
-                key={domain.id}
+                key={domainItem.id} 
                 button 
                 sx={ListItemMap}
+                component={Link}
+                to={`/DomainsCours/${domainItem.id}`} 
+                aria-label={`Go to ${domainItem.title} courses`}
               >
-                 <Link 
-                    to={`/DomainsCours/${domain.id}`} 
-                    style={{ textDecoration: "none" }} 
-                  >
-                    <ListItemText 
-                      primary={domain.title} 
-                      {...listItemTextStyle} 
-                    />
-                </Link>
+                <ListItemText 
+                  primary={domainItem.title} 
+                  {...listItemTextStyle} 
+                />
               </ListItem>
             ))}
           </List>
@@ -94,30 +96,18 @@ const Sidebar = () => {
       <Divider sx={DividerStyle} />
 
       <List disablePadding>
-        <ListItem 
-          button 
-          sx={listItemStyle}
-        >
+        <ListItem button sx={listItemStyle} aria-label="Go to settings">
           <ListItemIcon sx={IconSideStyle}>
             <Settings sx={iconStyle} />
           </ListItemIcon>
-          <ListItemText 
-            primary="Settings" 
-            primaryTypographyProps={primaryTextStyle} 
-          />
+          <ListItemText primary="Settings" primaryTypographyProps={primaryTextStyle} />
         </ListItem>
 
-        <ListItem 
-          button 
-          sx={listItemStyle}
-        >
+        <ListItem button sx={listItemStyle} aria-label="Go to help">
           <ListItemIcon sx={IconSideStyle}>
             <HelpOutline sx={iconStyle} />
           </ListItemIcon>
-          <ListItemText 
-            primary="Aide" 
-            primaryTypographyProps={primaryTextStyle} 
-          />
+          <ListItemText primary="Help" primaryTypographyProps={primaryTextStyle} />
         </ListItem>
       </List>
     </Box>

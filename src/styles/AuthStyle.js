@@ -9,7 +9,8 @@ const formContainerStyle = {
     borderRadius: 2,
     padding: 3
   };
-  
+  const InputBox={ marginBottom: 1,display:'flex',flexDirection:'column' }
+
   const titleStyle = {
     fontFamily: 'inherit',
     fontWeight: '700',
@@ -40,6 +41,7 @@ const formContainerStyle = {
       "& .MuiOutlinedInput-input": {
         py: "10px",
         fontSize: "14px",
+        ml:1
       },
     },
   };
@@ -73,9 +75,11 @@ const formContainerStyle = {
   const inputIcon={ 
    color: "#64748B",
    fontSize: "20px", 
-   ml: '15px' 
+   ml: '10px' ,
  };
   const inputStyle={
+    fontSize:'0.875rem',
+    borderRadius: 2,
    padding: 0,
    my: 1 
   };
@@ -93,4 +97,6 @@ const formContainerStyle = {
    alignItems: 'center', 
    fontFamily: 'ui-sans-serif, system-ui, sans-serif' 
   };
-export { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer};
+  const txtIcon={ml:2}
+  
+export { InputBox,txtIcon,formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer};

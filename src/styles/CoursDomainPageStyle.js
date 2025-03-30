@@ -10,26 +10,25 @@ const SelectedDomainDescription={color:'rgb(75,85,99)',fontFamily:'inherit'}
 const SelectedDomainGlobalInfoContainer={display:'flex',flexDirection:'row',color:'#64748B'}
 const SelectedDomainGlobalInfoItem={mr:3}
 const SelectedDomainGlobalInfoText={ display: "flex", alignItems: "center",fontSize:'0.9rem',fontFamily:'inherit' }
-const CoursboxStyle = (isCompleted) => ({
+const CoursboxStyle = {
   padding: '1rem',
   border: '1px solid rgb(229,231,235)',
   color: '#64748B',
-  backgroundColor: isCompleted ? '#F9FAFB' : '#FFFFFF',
+  backgroundColor:  '#FFFFFF',
   borderRadius: 3,
   display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
+  flexDirection: 'column',
+
   marginBottom: '1rem',
   cursor: 'pointer',
   transition: 'all 0.2s',
   '&:hover': {
     boxShadow: '0px 2px 10px rgba(86, 86, 86, 0.14)',
-    ...(!isCompleted && { border: '1px solid #8B5CF6' }), // Conditionnel
     '& h3': {
       color: '#8B5CF6'
     }
   }
-});
+};
 
 const CoursContainer ={display:'flex',flexDirection:'column',pl:2,flexGrow: 1}
 const CoursTime={fontSize:'17px',display:'flex',flexDirection:'row',justifyContent:'space-between',mb:1}

@@ -24,25 +24,21 @@ import {
    ButtonSubmit 
 } from '../styles/ProfileStyle';
 import {EmailInput, NormalInput} from "../components/ValidationInputs";
-
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 
 function Profile() {
-         const [email, setEmail] = useState("");
-         const [password, setPassword] = useState("");
-          const [fullname, setFullname] = useState("");
+          const [formData, setFormData] = useState({email:"",fullname:""});
          const [errors, setErrors] = useState({ email: "", password: "",fullname :"" });
        
          const validateForm = () => {
            const newErrors = {};
            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        
-           if (!email) newErrors.email = "L'email est requis";
-           else if (!emailRegex.test(email)) newErrors.email = "Veuillez entrer une adresse email valide";
-       
-           if (!password) newErrors.password = "Le mot de passe est requis";
-
-           if (!fullname) newErrors.fullname = "Le fullname est requis";
+           if (!formData.email) newErrors.email = "L'email est requis";
+           else if (!emailRegex.test(formData.email)) newErrors.email = "Veuillez entrer une adresse email valide";
+    
+           if (!formData.fullname) newErrors.fullname = "Le fullname est requis";
        
            setErrors(newErrors);
            return Object.keys(newErrors).length === 0;
@@ -89,10 +85,20 @@ function Profile() {
 
                     {/* Formulaire */}
                     <Box sx={ModificationBox} component="form" onSubmit={handleSubmit}>
-                        <NormalInput label='Full Name' placeholder='Your Full Name' value={fullname} setValue={setFullname} error={errors.fullname} />
+                        <NormalInput label='Full Name' placeholder='Your Full Name' value={formData.fullname} 
+                            setValue={(newFullName) => 
+                           setFormData(prev => ({ ...prev, fullname: newFullName }))
+                           }  
+                           error={errors.fullname} 
+                           icon={<PersonOutlinedIcon sx={inputIcon}/>}
+                        />
             
 
-                         <EmailInput email={email} setEmail={setEmail} error={errors.email} />
+                         <EmailInput email={formData.email} 
+                              setEmail={(newEmail) => 
+                              setFormData(prev => ({ ...prev, email: newEmail }))
+                              } error={errors.email} 
+                           />
 
                         <Box sx={ButtonBox}>
                             <Button sx={ButtonSubmit} type="submit">

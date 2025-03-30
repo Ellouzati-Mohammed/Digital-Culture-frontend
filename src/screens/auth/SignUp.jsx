@@ -18,23 +18,20 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
 import  {EmailInput,NormalInput,PasswordInput} from "../../components/ValidationInputs";
 
-
 const SignUpForm=()=>{
-      const [email, setEmail] = useState("");
-      const [password, setPassword] = useState("");
-      const [fullname, setFullname] = useState("");
+      const [formData, setFormData] = useState({password:"",email:"",fullname:""});
       const [errors, setErrors] = useState({ email: "", password: "",fullname :"" });
     
       const validateForm = () => {
         const newErrors = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-        if (!email) newErrors.email = "L'email est requis";
-        else if (!emailRegex.test(email)) newErrors.email = "Veuillez entrer une adresse email valide";
+        if (!formData.email) newErrors.email = "L'email est requis";
+        else if (!emailRegex.test(formData.email)) newErrors.email = "Veuillez entrer une adresse email valide";
     
-        if (!password) newErrors.password = "Le mot de passe est requis";
+        if (!formData.password) newErrors.password = "Le mot de passe est requis";
 
-        if (!fullname) newErrors.fullname = "Le fullname est requis";
+        if (!formData.fullname) newErrors.fullname = "Le fullname est requis";
     
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -54,9 +51,25 @@ const SignUpForm=()=>{
           <Typography variant="h5" sx={titleStyle}>Sign Up</Typography>
           <Typography variant="span" sx={subtitleStyle}>Sign up to start learning</Typography>
      
-             <NormalInput label='Full Name' placeholder='Your Full Name' value={fullname} setValue={setFullname} error={errors.fullname} />
-             <EmailInput email={email} setEmail={setEmail} error={errors.email} />
-             <PasswordInput password={password} setPassword={setPassword} error={errors.password} />
+             <NormalInput label='Full Name' placeholder='Your Full Name' 
+                value={formData.fullname} 
+                setValue={(newFullName) => 
+                  setFormData(prev => ({ ...prev, fullname: newFullName }))
+                  } 
+                error={errors.fullname} 
+                icon={<PersonOutlinedIcon sx={inputIcon}/>}
+                />
+             <EmailInput email={formData.email} 
+                setEmail={(newEmail) => 
+                setFormData(prev => ({ ...prev, email: newEmail }))
+                } 
+                 error={errors.email} />
+             <PasswordInput 
+               password={formData.password} 
+                setPassword={(newPassword) => 
+                setFormData(prev => ({ ...prev, password: newPassword }))
+                }  
+                error={errors.password} />
              
              <Button type="submit" sx={submitButtonStyle}>
                 Submit

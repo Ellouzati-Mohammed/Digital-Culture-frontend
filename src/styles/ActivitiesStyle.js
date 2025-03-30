@@ -1,23 +1,31 @@
+
 const vidioBoxStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1E222A",
     minHeight: "400px",
-    borderRadius: "12px",
+    borderRadius: 3,
     overflow: "hidden",
     my: 2,
     width: '70%'
   };
   
-  const QuizQuestion={fontFamily:'inherit',fontSize:'16px'}
+  const QuizQuestion={fontSize:'1rem'}
+  
+  const disabledStyleQuiz = {
+    pointerEvents: "none", 
+    opacity: 0.5, 
+    userSelect: "none", 
+  };
+
+
   const quizBoxStyle = {
     border: 'solid 2px #E5E7EB',
     borderRadius: 2,
     padding: 2,
     margin: 1,
-    fontFamily: 'ui-sans-serif, system-ui, sans-serif'
-  };
+     };
   
   const questionBoxStyle = {
     display: "inline-flex",
@@ -25,10 +33,10 @@ const vidioBoxStyle = {
     justifyContent: "center",
     width: "27px",
     height: "27px",
-    borderRadius: "50%",
+    borderRadius: 3,
     backgroundColor: "#1E90FF",
     color: "white",
-    fontSize: '15px',
+    fontSize: '1rem',
     marginRight: "8px",
   };
 
@@ -48,11 +56,6 @@ const vidioBoxStyle = {
       : "white",
     transition: "background-color 0.3s",
   });
-  const disabledStyleQuiz = {
-    pointerEvents: "none", 
-    opacity: 0.5, 
-    userSelect: "none", 
-  };
 
   
   const formControlLabelStyle = {

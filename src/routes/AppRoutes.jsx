@@ -5,7 +5,7 @@ import Activitie from "../screens/Activities";
 import Profile from "../screens/Profile";
 import SignUp from "../screens/auth/SignUp.jsx";
 import SignIn from "../screens/auth/SignIn.jsx";
-import DomainManagementSreen from "../screens/admin/DomainManagementScreen.jsx";
+
 
 
 
@@ -13,7 +13,6 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<HomeScreen/>} />
-      <Route path="/DomainManagement" element={<DomainManagementSreen/>} />
       <Route path="/DomainsCours/:DomainId" element={<CoursDomain/>} />
       <Route path="/DomainsCours/Activities/:ActivitiesId" element={<Activitie/>} />
       <Route path="/Profile" element={<Profile/>} />
