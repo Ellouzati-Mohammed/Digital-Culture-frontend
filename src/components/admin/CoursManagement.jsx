@@ -1,25 +1,33 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { NormalInput, SelectInput } from "../ValidationInputs";
 import { inputStyle } from '../../styles/AuthStyle';
 
 import { formadminTitle, boxadminForm, adminButtonContainer, adminAnnulerButton, adminAddButton, GlobaladminFormContainer } from '../../styles/ManagementStyle.js';
 
-function CoursManagement({ setShowNewCoursForm }) {
+function CoursManagement({ setShowNewCoursForm ,CoursData , onSubmit }) {
   const [formData, setFormData] = useState({
-    CoursName: "",
-    Description: "",
-    Niveau: "",
-    ImageUrl: ""
+    coursTitle: "",
+    coursSubtitle: "",
+    estimated_time_minutes: ""
   });
 
   const [errors, setErrors] = useState({
-    CoursName: "",
-    Description: "",
-    Niveau: "",
-    ImageUrl: ""
+    coursTitle: "",
+    coursSubtitle: "",
+    estimated_time_minutes: ""
   });
+
+  useEffect(() => {
+    if (CoursData) {
+      setFormData({
+        coursTitle: CoursData.coursTitle || "",
+        coursSubtitle: CoursData.coursSubtitle || "",
+        estimated_time_minutes: CoursData.estimated_time_minutes || "",
+      });
+    }
+  }, [CoursData]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -34,23 +42,18 @@ function CoursManagement({ setShowNewCoursForm }) {
     let formErrors = {};
     let isValid = true;
 
-    if (!formData.CoursName) {
-      formErrors.CoursName = "Le nom du cours est requis";
+    if (!formData.coursTitle) {
+      formErrors.coursTitle = "Le nom du cours est requis";
       isValid = false;
     }
 
-    if (!formData.Description) {
-      formErrors.Description = "La description est requise";
+    if (!formData.coursSubtitle) {
+      formErrors.coursSubtitle = "La coursSubtitle est requise";
       isValid = false;
     }
-
-    if (!formData.Niveau) {
-      formErrors.Niveau = "Le niveau est requis";
-      isValid = false;
-    }
-
-    if (!formData.ImageUrl) {
-      formErrors.ImageUrl = "L'URL de l'image est requise";
+    
+    if (!formData.estimated_time_minutes) {
+      formErrors.estimated_time_minutes = "Le estimated_time_minutes est requise";
       isValid = false;
     }
 
@@ -60,8 +63,7 @@ function CoursManagement({ setShowNewCoursForm }) {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      // Soumettre les données
-      console.log("Formulaire soumis avec succès", formData);
+      onSubmit(formData)
     }
   };
 
@@ -78,41 +80,29 @@ function CoursManagement({ setShowNewCoursForm }) {
         <NormalInput
           label='Nom du Cours'
           placeholder='Ex : Machine Learning'
-          name='CoursName'
-          value={formData.CoursName}
+          name='coursTitle'
+          value={formData.coursTitle}
           setValue={handleChange}
-          error={errors.CoursName}
+          error={errors.coursTitle}
         />
         <NormalInput
-          label='Description'
+          label='coursSubtitle'
           placeholder='Ex : Cours sur Machine Learning'
-          name='Description'
-          value={formData.Description}
+          name='coursSubtitle'
+          value={formData.coursSubtitle}
           setValue={handleChange}
-          error={errors.Description}
+          error={errors.coursSubtitle}
           multiline={true}
         />
-        <SelectInput
-          label='Choisir un niveau'
-          placeholder='Choisir un niveau'
-          name='Niveau'
-          value={formData.Niveau}
-          setValue={handleChange}
-          options={[
-            { value: 1, label: 'Machine Learning' },
-            { value: 2, label: 'Data Science' },
-            { value: 3, label: 'AI' }
-          ]}
-          error={errors.Niveau}
-        />
         <NormalInput
-          label='URL de l image'
-          placeholder='Ex : https://imageurl.com'
-          name='ImageUrl'
-          value={formData.ImageUrl}
+          label='estimated_time_minutes'
+          placeholder='Ex : 15 min'
+          name='estimated_time_minutes'
+          value={formData.estimated_time_minutes}
           setValue={handleChange}
-          error={errors.ImageUrl}
+          error={errors.estimated_time_minutes}
         />
+        
         <Box sx={adminButtonContainer}>
           <Button sx={adminAnnulerButton} onClick={handleCancel}>
             Annuler

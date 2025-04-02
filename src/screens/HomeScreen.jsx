@@ -12,6 +12,10 @@ function HomeScreen(){
   const [role, setRole] = useState('admin');
   const [showNewDomainForm, setShowNewDomainForm] = useState(false); // État pour afficher le formulaire
 
+  const handleAddDomain = (formData) => {
+    console.log("Données du formulaire a ajouter:", formData);
+  };
+
     return (
         <Box sx={HomeBox}>
             {!(role.toLowerCase()==='admin') && <Box sx={WelcomCardMotivation}>
@@ -39,7 +43,10 @@ function HomeScreen(){
                 </Button>
             </Box>
             {role === "admin" && showNewDomainForm && (
-                <DomainMangement setShowNewDomainForm={setShowNewDomainForm} />
+                <DomainMangement 
+                   setShowNewDomainForm={setShowNewDomainForm} 
+                   onSubmit={handleAddDomain} 
+                />
             )}
             <AllDomainsCard role={role}/>
         </Box>

@@ -1,10 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Box, Typography, Chip, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { EmojiEvents } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { domain,domainImages } from "../services/DomainService.js";
+import { domain} from "../services/DomainService.js";
 import { 
   CardContainerStyle, 
   HeaderSecCard, 
@@ -19,23 +19,26 @@ import {
   LinkCardDomain 
 } from '../styles/DomainCardStyle.js';
 import { adminDeleteButton, adminButtonContainer, adminModifyButton } from '../styles/ManagementStyle.js';
+import DomainManagement from "./admin/DomainManagement.jsx";
 
-const DomainCard = React.memo(({ domainId, domainTitle, role }) => {
-
+const DomainCard = React.memo(({ domainId, domainTitle ,domainDecription,level,domainImageUrl, role,setShowNewDomainForm, onEdit}) => {
 
   const handleDelete = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('delet Domaine ID:', domainId);
   }, []);
 
   const handleModify = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
+    onEdit({ id: domainId , domainTitle: domainTitle , domainDecription : domainDecription,level : level , domainImageUrl: domainImageUrl });
+    setShowNewDomainForm(true);
   }, []);
   
   return (
     <Box key={domainId} sx={CardContainerStyle}>
-      <Box sx={HeaderSecCard(domainId, domainImages)}>
+      <Box sx={HeaderSecCard(domainImageUrl)}>
         <Box sx={HeaderSecCardContainer}>
           <Typography variant="h5" sx={DomainTitle}>
             {domainTitle.split('(')[0].trim()}
@@ -52,14 +55,14 @@ const DomainCard = React.memo(({ domainId, domainTitle, role }) => {
             sx={NbrCoursChip}
           />
           <Chip
-            label={domainId % 3 === 0 ? "Beginner" : domainId % 3 === 1 ? "Intermediate" : "Advanced"}
+            label={level}
             size="small"
             sx={LevelCoursChip}
           />
         </Box>
 
         <Typography variant="body2" sx={DomainDecriptionCard}>
-          Master key concepts of {domainTitle.toLowerCase()} through hands-on projects and real-life case studies.
+          {domainDecription}
         </Typography>
 
         {role.toLowerCase() === "admin" && (
@@ -80,17 +83,39 @@ const DomainCard = React.memo(({ domainId, domainTitle, role }) => {
 
 // AllDomainsCard Component
 function AllDomainsCard({ role }) {
+
+  const [domains, setDomains] = useState(domain); // Initialisation des domaines
+  const [showNewDomainForm, setShowNewDomainForm] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState(null);// le role de cet useState et de recupere le domaine quonveut modifier
+
+  const handleModifyDomain = (formData) => {
+    console.log("les nv Données du formulaire modifier:", formData);
+  };
+ 
   return (
     <Box sx={AllDomainBox}>
-      {domain.map((domainItem) => (
-        <Link 
-          key={domainItem.id} 
-          to={`/DomainsCours/${domainItem.id}`} 
-          style={LinkCardDomain}
-        >
-          <DomainCard domainId={domainItem.id} domainTitle={domainItem.title} role={role} />
+      {domains.map((domainItem) => (
+        <Link key={domainItem.id} to={`/DomainsCours/${domainItem.id}`} style={LinkCardDomain}>
+          <DomainCard 
+            domainId={domainItem.id} 
+            domainTitle={domainItem.domainTitle}
+            level={domainItem.level}
+            domainImageUrl={domainItem.domainImageUrl}
+            domainDecription={domainItem.domainDecription}
+            role={role}
+            setShowNewDomainForm={setShowNewDomainForm}
+            onEdit={setSelectedDomain}
+          />
         </Link>
       ))}
+
+      {showNewDomainForm && (
+        <DomainManagement 
+          setShowNewDomainForm={setShowNewDomainForm} 
+          onSubmit={handleModifyDomain} 
+          domainData={selectedDomain}
+        />
+      )}
     </Box>
   );
 }

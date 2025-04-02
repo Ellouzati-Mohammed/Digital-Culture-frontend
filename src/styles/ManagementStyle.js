@@ -1,8 +1,11 @@
+import { height, minHeight } from "@mui/system"
+
 const adminDeleteButton={
     backgroundColor: "#D32F2F",
     color: "white",
     height:'0',
     fontSize: "0.8rem",
+    minHeight:'100%',
     textTransform: "none"
   }
 const adminAddButton={
@@ -27,12 +30,13 @@ const adminModifyButton={
     height:'0',
     fontSize: "0.8rem",
     textTransform: "none",
+    minHeight:'100%',
     mr:2
 }
 
 const headerManagementTitle={display:'flex',flexDirection:'row',fontFamily:'ui-sans-serif, system-ui, sans-serif',my:3,justifyContent:'space-between',mx:1,alignItems:'center'}
 
-const adminButtonContainer={ mt: 2, display: "flex", justifyContent: "flex-end" }
+const adminButtonContainer={ mt: 1, display: "flex", justifyContent: "flex-end",maxWidth: "100%" }
 
 const titleManagementtxt={fontSize:'1.5rem',fontWeight: 700,fontFamily:'inherit'}
 
@@ -57,8 +61,8 @@ const GlobaladminFormContainer= {
   alignItems: "center",
   zIndex: 99,
 }
-const boxadminForm={backgroundColor:'#FFFFFF',borderRadius:2,p:'1.5rem',width:'30%'}
+const boxadminForm={backgroundColor:'#FFFFFF',borderRadius:2,p:'1.5rem',width:'30%',overflow: 'hidden',position: 'relative'}
 
-const formadminTitle={fontFamily:'inherit',fontWeight:'600',fontSize:'1.125rem',mb:2}
+const formadminTitle={fontFamily:'inherit',fontWeight:'600',fontSize:'1.125rem',mb:2,maxWidth: "100%"}
 
 export {formadminTitle,boxadminForm,GlobaladminFormContainer,adminDeleteButton,adminButtonContainer,adminModifyButton,headerManagementTitle,titleManagementtxt,addButton,adminAddButton,adminAnnulerButton}

@@ -1,6 +1,7 @@
 
 const vidioBoxStyle = {
     display: "flex",
+    flexDirection:'column',
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1E222A",
@@ -8,6 +9,7 @@ const vidioBoxStyle = {
     borderRadius: 3,
     overflow: "hidden",
     my: 2,
+    p:1,
     width: '70%'
   };
   
@@ -63,10 +65,13 @@ const vidioBoxStyle = {
   };
   
   const submitButtonStyle = {
-    paddingX: 4,
-    backgroundColor: '#8B5CF6',
-    color: 'white',
-    fontFamily: 'inherit'
+    backgroundColor: "#8B5CF6",
+    color: "white",
+    height:'0',
+    fontSize: "0.8rem",
+    minHeight:'100%',
+    textTransform: "none",
+    mx:2
   };
   const submitButtonStyleBox={
     display:'flex',

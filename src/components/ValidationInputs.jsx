@@ -76,8 +76,13 @@ const PasswordInput = ({ password, setPassword, error }) => {
     error,
     icon,
     multiline = false,
-    rows = 4
+    rows = 4,
+    name // Le nom est maintenant disponible via les props
   }) => {
+    const handleChange = (e) => {
+      // On envoie un objet { name, value } à la fonction `setValue`
+      setValue({ target: { name, value: e.target.value } });
+    };
     return (
       <Box sx={InputBox}>
         <Typography variant="span" sx={inputLabel}>{label}</Typography>
@@ -86,10 +91,11 @@ const PasswordInput = ({ password, setPassword, error }) => {
           variant="outlined"
           placeholder={placeholder}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={handleChange }
           error={!!error}
           helperText={error}
           multiline={multiline}
+          name={name} // Important pour l'association HTML
           rows={rows}
           InputProps={{
             startAdornment: (
@@ -117,13 +123,21 @@ const PasswordInput = ({ password, setPassword, error }) => {
     value, 
     setValue, 
     options = [],
+    name,  
+    error, 
   }) => {
+
+    const handleChange = (e) => {
+      // On envoie un objet { name, value } à la fonction `setValue`
+      setValue({ target: { name, value: e.target.value } });
+    };
+
     return (
       <Box sx={{ marginBottom: 1, display: 'flex', flexDirection: 'column' }}>
         <Typography variant="span" sx={inputLabel}>{label}</Typography>
         <Select
           value={value || ""}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={handleChange}
           displayEmpty
           renderValue={(selected) => {
             if (!selected) {
@@ -138,15 +152,17 @@ const PasswordInput = ({ password, setPassword, error }) => {
             '& .MuiSelect-select': { 
               display: 'flex', 
               alignItems: 'center',
-              py:1
+              py:1,
+              
             }
           }}
           MenuProps={{
             PaperProps: {
               sx: {
                 zIndex: 9999,
-                marginTop: '8px',
-                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                maxHeight:'15%',
+                borderRadius:2
               }
             }
           }}
@@ -162,15 +178,22 @@ const PasswordInput = ({ password, setPassword, error }) => {
                 fontSize:'0.875rem',
                 mx:1,
                 px:2,
-                '&:hover': { backgroundColor: '#f5f5f5' } 
+                '&:hover': { backgroundColor: '#f5f5f5' } ,
+                borderRadius:2
               }}
             >
               {option.label}
             </MenuItem>
           ))}
         </Select>
+        
+        {/* Affichage de l'erreur si elle existe */}
+        {error && <Typography variant="body2" color="error" sx={{ mt: 0.5 }}>{error}</Typography>}
       </Box>
     );
-  };
+};
+
+
+
 
 export  {EmailInput,PasswordInput,NormalInput,SelectInput}

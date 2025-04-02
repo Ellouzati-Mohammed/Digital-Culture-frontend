@@ -26,9 +26,13 @@ import{ vidioBoxStyle,
 import { adminDeleteButton, adminButtonContainer,adminModifyButton } from '../styles/ManagementStyle.js';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
+import ActivityManagement from "../components/admin/ActivitiesManagement.jsx";
 
-const Vidio = ({ videoUrl }) => {
-  return (
+
+
+
+const Vidio = ({ videoUrl,handleDelete,handleModify }) => {
+  return (<>
     <Box sx={vidioBoxStyle}>
       <iframe
         width="100%"
@@ -39,11 +43,21 @@ const Vidio = ({ videoUrl }) => {
         allowFullScreen
         style={{ borderRadius: "12px" }}
       ></iframe>
+      <Box sx={adminButtonContainer}>
+        <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+          Modify
+        </Button>
+        <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
+          Delete
+        </Button>
+      </Box>
     </Box>
+    
+    </>
   );
 };
 
-const Quiz = ({ question, options, correctAnswer }) => {
+const Quiz = ({ question, options, correctAnswer,handleDelete,handleModify }) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -64,6 +78,7 @@ const Quiz = ({ question, options, correctAnswer }) => {
         </Box>
         {question}
       </Typography>
+      
       <FormControl component="fieldset" fullWidth sx={isSubmitted ? disabledStyleQuiz : {}}>
         <RadioGroup value={selectedValue} onChange={handleChange}>
           {options.map((option) => (
@@ -80,23 +95,73 @@ const Quiz = ({ question, options, correctAnswer }) => {
         </RadioGroup>
         <Box sx={submitButtonStyleBox}>
           <Button type="submit" sx={submitButtonStyle}>Submit</Button>
+         
+            <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+              Modify
+            </Button>
+            <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
+              Delete
+            </Button>
+          
         </Box>
+        
       </FormControl>
     </Box>
   );
 };
+const Pdf=({link,handleDelete,handleModify})=>{
+  return (
+      <Box sx={pdfResource}>
+          <Typography fontSize={16} fontWeight={500}>
+            Support de cours :
+          </Typography>
+          <Link href={link} download sx={pdfLinkBoxStyle}>
+            <CloudDownload sx={{ mr: 1 }} /> Télécharger le PDF
+          </Link>
+          <Box sx={adminButtonContainer}>
+            <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+              Modify
+            </Button>
+            <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
+              Delete
+            </Button>
+        </Box>
+      </Box>
+  )
+}
+
+
 
 function Activitie() {
+  const [role, setRole] = useState('admin');
+  const [showNewActivityForm, setShowNewActivityForm] = useState(false); // État pour afficher le formulaire
+  
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleModify = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleAddResource = (formData) => {
+    console.log("Données du formulaire a ajouter:", formData);
+  };
+
   return (
     <Container disableGutters={true} sx={activitieContainerStyle}>
       <Box sx={headerManagementTitle}>
         <Typography variant="h3" sx={titleManagementtxt}>
           Gestion des Ressources
         </Typography>
-        <Button variant="contained" startIcon={<AddCircleOutlineOutlinedIcon />} sx={addButton}>
+        <Button variant="contained" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => setShowNewActivityForm(true)} sx={addButton}>
           Nouveau Ressource
         </Button>
       </Box>
+      {role === "admin" && showNewActivityForm && (
+          <ActivityManagement setShowNewActivityForm={setShowNewActivityForm} onSubmit={handleAddResource} />
+      )}
 
       <Box sx={cardBoxStyle}>
         <Typography variant="h2" sx={cardHeaderStyle}>
@@ -129,14 +194,8 @@ function Activitie() {
             PDF and Article
           </Typography>
         </Box>
-        <Box sx={pdfResource}>
-          <Typography fontSize={16} fontWeight={500}>
-            Support de cours :
-          </Typography>
-          <Link href="https://fad.umi.ac.ma/mod/resource/view.php?id=41659" download sx={pdfLinkBoxStyle}>
-            <CloudDownload sx={{ mr: 1 }} /> Télécharger le PDF
-          </Link>
-        </Box>
+        
+        <Pdf link='https://fad.umi.ac.ma/mod/resource/view.php?id=41659'/>
 
         <Box sx={resourceBoxHeaderStyle}>
           <HelpOutlineIcon sx={resourceIcon('#22C55E')} />
@@ -152,3 +211,4 @@ function Activitie() {
 }
 
 export default Activitie;
+

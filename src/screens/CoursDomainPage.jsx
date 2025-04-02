@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -52,6 +52,7 @@ import CoursMangement from '../components/admin/CoursManagement.jsx';
 
 
 const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Update, publiched_Date, nbr_Enroll }) => {
+
   const timeDifference = TimeDifference(last_Update);
 
   return (
@@ -96,9 +97,23 @@ const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Up
   );
 }
 
-const Cours = ({ cours_id, estimated_time_minutes, cours_title, cours_subtitle, handleDelete, handleModify }) => {
+const Cours = ({ coursId, estimated_time_minutes, coursTitle, coursSubtitle , setShowNewCoursForm , onEdit}) => {
+
+   const handleDelete = useCallback((e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('delet Cours ID:', coursId);
+    }, []);
+  
+    const handleModify = useCallback((e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onEdit({ id: coursId , coursTitle: coursTitle , coursSubtitle : coursSubtitle , estimated_time_minutes :estimated_time_minutes});
+      setShowNewCoursForm(true);
+    }, []);
+
   return (
-    <Link to={`/DomainsCours/Activities/${cours_id}`} style={{ textDecoration: 'none' }}>
+    <Link to={`/DomainsCours/Activities/${coursId}`} style={{ textDecoration: 'none' }}>
       <Box sx={CoursboxStyle}>
         <Box sx={CoursContainer}>
           <Box sx={CoursTime}>
@@ -107,10 +122,10 @@ const Cours = ({ cours_id, estimated_time_minutes, cours_title, cours_subtitle, 
             </Typography>
           </Box>
           <Typography variant="h3" sx={CoursTiltleTxt}>
-            {cours_title}
+            {coursTitle}
           </Typography>
           <Typography variant="p" sx={CoursSubTiltleTxt}>
-            {cours_subtitle}
+            {coursSubtitle}
           </Typography>
         </Box>
         <Box sx={adminButtonContainer}>
@@ -125,22 +140,68 @@ const Cours = ({ cours_id, estimated_time_minutes, cours_title, cours_subtitle, 
     </Link>
   );
 };
+function AllCoursCard() {
+  const role='admin'
+  const [showNewCoursForm, setShowNewCoursForm] = useState(false);
+  const [selectedCours, setSelectedCours] = useState(null);// le role de cet useState et de recupere le Course quonveut modifier
 
+  const handleModifyDomain = (formData) => {
+    console.log("les nv Données du formulaire modifier:", formData);
+  };
+
+  return(
+        <Box sx={AllCoursContainer}>
+          <Box sx={AllCoursSecContainer}>
+            <Typography variant="h2" sx={HeaderTitle}>
+              Course Content
+            </Typography>
+            <Cours
+              
+              coursId={1}
+              estimated_time_minutes={15}
+              coursTitle="Introduction to JavaScript"
+              coursSubtitle="An overview of JavaScript and its role in web development."
+              onEdit={setSelectedCours}
+              setShowNewCoursForm={setShowNewCoursForm}
+            />
+            <Cours
+              
+              coursId={2}
+              estimated_time_minutes={15}
+              coursTitle="Introduction to JavaScript"
+              coursSubtitle="An overview of JavaScript and its role in web development."
+              onEdit={setSelectedCours}
+              setShowNewCoursForm={setShowNewCoursForm}
+            />
+            <Cours
+              
+              coursId={3}
+              estimated_time_minutes={15}
+              coursTitle="Introduction to JavaScript"
+              coursSubtitle="An overview of JavaScript and its role in web development."
+              onEdit={setSelectedCours}
+              setShowNewCoursForm={setShowNewCoursForm}
+            />
+            
+          </Box>
+          {role === "admin" && showNewCoursForm && (
+                <CoursMangement 
+                   setShowNewCoursForm={setShowNewCoursForm} 
+                   onSubmit={handleModifyDomain}
+                   CoursData={selectedCours}
+                />
+            )}
+         </Box>
+  )
+}
 export default function CoursDomain() {
   const [role, setRole] = useState('admin');
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
-
-  const handleDelete = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Delete course');
+  
+  const handleAddCours = (formData) => {
+    console.log("Données du formulaire a ajouter:", formData);
   };
-
-  const handleModify = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Modify course');
-  };
+  
 
   return (
     <Container maxWidth="lg" disableGutters sx={CoursDomainContainer}>
@@ -159,7 +220,9 @@ export default function CoursDomain() {
           </Button>
         </Box>
         {role === "admin" && showNewCoursForm && (
-          <CoursMangement setShowNewCoursForm={setShowNewCoursForm} />
+          <CoursMangement setShowNewCoursForm={setShowNewCoursForm}
+          onSubmit={handleAddCours}
+          />
         )}
         <SelctedDomainInfo
           nbrCours={10}
@@ -169,48 +232,7 @@ export default function CoursDomain() {
           publiched_Date="10 Janvier 2024"
           nbr_Enroll={1500}
         />
-        <Box sx={AllCoursContainer}>
-          <Box sx={AllCoursSecContainer}>
-            <Typography variant="h2" sx={HeaderTitle}>
-              Course Content
-            </Typography>
-            <Cours
-              
-              cours_id={1}
-              estimated_time_minutes={15}
-              cours_title="Introduction to JavaScript"
-              cours_subtitle="An overview of JavaScript and its role in web development."
-              handleDelete={handleDelete}
-              handleModify={handleModify}
-            />
-            <Cours
-              
-              cours_id={2}
-              estimated_time_minutes={15}
-              cours_title="Introduction to JavaScript"
-              cours_subtitle="An overview of JavaScript and its role in web development."
-              handleDelete={handleDelete}
-              handleModify={handleModify}
-            />
-            <Cours
-              
-              cours_id={3}
-              estimated_time_minutes={15}
-              cours_title="Introduction to JavaScript"
-              cours_subtitle="An overview of JavaScript and its role in web development."
-              handleDelete={handleDelete}
-              handleModify={handleModify}
-            />
-            <Cours
-              cours_id={4}
-              estimated_time_minutes={15}
-              cours_title="Introduction to JavaScript"
-              cours_subtitle="An overview of JavaScript and its role in web development."
-              handleDelete={handleDelete}
-              handleModify={handleModify}
-            />
-          </Box>
-        </Box>
+        <AllCoursCard />
       </Box>
     </Container>
   );

@@ -13,9 +13,9 @@ const CardContainerStyle={
     }
   }
   
-  const HeaderSecCard= (categoryId, categoryImages) => ({
+  const HeaderSecCard= (domainImageUrl) => ({
     height: '200px',
-    background: `url(${categoryImages[categoryId]}) center/cover`,
+    background: `url(${domainImageUrl}) center/cover`,
     position: 'relative',
   });
   const HeaderSecCardContainer={

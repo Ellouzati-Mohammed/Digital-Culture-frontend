@@ -1,23 +1,35 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { NormalInput, SelectInput } from "../ValidationInputs";
 import { formadminTitle, boxadminForm, adminButtonContainer, adminAnnulerButton, adminAddButton, GlobaladminFormContainer } from '../../styles/ManagementStyle.js';
 
-function DomainMangement({ setShowNewDomainForm }) {
+function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
+  
   const [formData, setFormData] = useState({
-    domainName: "",
-    description: "",
-    niveau: "",
-    imageUrl: ""
+    domainTitle: "",
+    domainDecription: "",
+    level: "",
+    domainImageUrl: "",
   });
 
   const [errors, setErrors] = useState({
-    domainName: "",
-    description: "",
-    niveau: "",
-    imageUrl: ""
+    domainTitle: "",
+    domainDecription: "",
+    level: "",
+    domainImageUrl: ""
   });
+
+  useEffect(() => {
+    if (domainData) {
+      setFormData({
+        domainTitle: domainData.domainTitle || "",
+        domainDecription: domainData.domainDecription || "",
+        level: domainData.level || "",
+        domainImageUrl: domainData.domainImageUrl || "",
+      });
+    }
+  }, [domainData]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -32,23 +44,23 @@ function DomainMangement({ setShowNewDomainForm }) {
     let formErrors = {};
     let isValid = true;
 
-    if (!formData.domainName) {
-      formErrors.domainName = "Le nom du domaine est requis";
+    if (!formData.domainTitle) {
+      formErrors.domainTitle = "Le nom du domaine est requis";
       isValid = false;
     }
 
-    if (!formData.description) {
-      formErrors.description = "La description est requise";
+    if (!formData.domainDecription) {
+      formErrors.domainDecription = "La domainDecription est requise";
       isValid = false;
     }
 
-    if (!formData.niveau) {
-      formErrors.niveau = "Le niveau est requis";
+    if (!formData.level) {
+      formErrors.level = "Le level est requis";
       isValid = false;
     }
 
-    if (!formData.imageUrl) {
-      formErrors.imageUrl = "L'URL de l'image est requise";
+    if (!formData.domainImageUrl) {
+      formErrors.domainImageUrl = "L'URL de l'image est requise";
       isValid = false;
     }
 
@@ -58,7 +70,7 @@ function DomainMangement({ setShowNewDomainForm }) {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log("Formulaire soumis avec succès", formData);
+      onSubmit(formData);
     }
   };
 
@@ -71,39 +83,40 @@ function DomainMangement({ setShowNewDomainForm }) {
         <NormalInput
           label='Nom du Domaine'
           placeholder='Ex : Machine Learning'
-          name='domainName'
-          value={formData.domainName}
+          name='domainTitle'
+          value={formData.domainTitle}
           setValue={handleChange}
-          error={errors.domainName}
+          error={errors.domainTitle}
         />
         <NormalInput
-          label='Description'
+          label='domainDecription'
           placeholder='Ex : Machine Learning'
-          name='description'
-          value={formData.description}
+          name='domainDecription'
+          value={formData.domainDecription}
           setValue={handleChange}
-          error={errors.description}
+          error={errors.domainDecription}
           multiline={true}
         />
         <SelectInput
-          label='Choisir un niveau'
-          name='niveau'
-          value={formData.niveau}
+          label='Choisir un level'
+          placeholder='coisir un level'
+          name='level'
+          value={formData.level}
           setValue={handleChange}
           options={[
             { value: 1, label: 'Machine Learning' },
             { value: 2, label: 'Data Science' },
             { value: 3, label: 'AI' }
           ]}
-          error={errors.niveau}
+          error={errors.level}
         />
         <NormalInput
           label="URL de l'image"
           placeholder='Ex : https://example.com/image.jpg'
-          name='imageUrl'
-          value={formData.imageUrl}
+          name='domainImageUrl'
+          value={formData.domainImageUrl}
           setValue={handleChange}
-          error={errors.imageUrl}
+          error={errors.domainImageUrl}
         />
         <Box sx={adminButtonContainer}>
           <Button sx={adminAnnulerButton} onClick={handleCancel}>
