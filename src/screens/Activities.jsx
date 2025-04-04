@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 
 import { Container,Card,CardMedia,Box, CardContent, ButtonGroup,Button,Link } from "@mui/material";
@@ -31,7 +31,9 @@ import ActivityManagement from "../components/admin/ActivitiesManagement.jsx";
 
 
 
-const Vidio = ({ videoUrl,handleDelete,handleModify }) => {
+const Video = ({ videoId,videoUrl,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit }) => {
+  
+
   return (<>
     <Box sx={vidioBoxStyle}>
       <iframe
@@ -44,10 +46,10 @@ const Vidio = ({ videoUrl,handleDelete,handleModify }) => {
         style={{ borderRadius: "12px" }}
       ></iframe>
       <Box sx={adminButtonContainer}>
-        <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+        <Button onClick={(e) => handleModify(e, "video")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
           Modify
         </Button>
-        <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
+        <Button onClick={(e) => handleDelete(e, "video")} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
           Delete
         </Button>
       </Box>
@@ -57,9 +59,10 @@ const Vidio = ({ videoUrl,handleDelete,handleModify }) => {
   );
 };
 
-const Quiz = ({ question, options, correctAnswer,handleDelete,handleModify }) => {
+const Quiz = ({ quizId,question, options, correctAnswer,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit }) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
@@ -96,10 +99,10 @@ const Quiz = ({ question, options, correctAnswer,handleDelete,handleModify }) =>
         <Box sx={submitButtonStyleBox}>
           <Button type="submit" sx={submitButtonStyle}>Submit</Button>
          
-            <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+            <Button onClick={(e) => handleModify(e, "quiz")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
               Modify
             </Button>
-            <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
+            <Button onClick={(e) => handleDelete(e, "quiz")} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
               Delete
             </Button>
           
@@ -109,7 +112,11 @@ const Quiz = ({ question, options, correctAnswer,handleDelete,handleModify }) =>
     </Box>
   );
 };
-const Pdf=({link,handleDelete,handleModify})=>{
+const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit})=>{
+
+  
+  
+
   return (
       <Box sx={pdfResource}>
           <Typography fontSize={16} fontWeight={500}>
@@ -119,10 +126,10 @@ const Pdf=({link,handleDelete,handleModify})=>{
             <CloudDownload sx={{ mr: 1 }} /> Télécharger le PDF
           </Link>
           <Box sx={adminButtonContainer}>
-            <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+            <Button onClick={(e) => handleModify(e, "pdf")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
               Modify
             </Button>
-            <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
+            <Button onClick={(e) => handleDelete(e, "pdf")} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
               Delete
             </Button>
         </Box>
@@ -135,19 +142,27 @@ const Pdf=({link,handleDelete,handleModify})=>{
 function Activitie() {
   const [role, setRole] = useState('admin');
   const [showNewActivityForm, setShowNewActivityForm] = useState(false); // État pour afficher le formulaire
-  
-  const handleDelete = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const [currentType, setCurrentType] = useState(null);
+  const [selectedResourceData, setselectedResourceData] = useState(null);
+
+  const handleAddResource = (resourceData) => {
+    console.log("Données du formulaire a ajouter:", resourceData);
   };
 
-  const handleModify = (e) => {
+  const handleDelete = (e,type,id) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('delet  : '+type+' id : '+id)
   };
-  const handleAddResource = (formData) => {
-    console.log("Données du formulaire a ajouter:", formData);
+
+  const handleModify = (e,resourceData) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowNewActivityForm(true);
+    setselectedResourceData(resourceData);
+    console.log('add : ', resourceData);
   };
+  
 
   return (
     <Container disableGutters={true} sx={activitieContainerStyle}>
@@ -186,8 +201,16 @@ function Activitie() {
         </Box>
 
         {/* Intégration de la vidéo YouTube */}
-        <Vidio videoUrl="https://www.youtube.com/embed/4E90e13_-2A" />
-        
+        <Video 
+          videoId={1} 
+          videoUrl="https://www.youtube.com/embed/4E90e13_-2A"
+          handleDelete={(e)=>handleDelete(e,'video',2)}
+          handleModify={(e) => handleModify(e, {
+            id: 1, // Ajouter un ID unique
+            type: 'video',
+            videoUrl: "https://www.youtube.com/embed/4E90e13_-2A"
+          })}
+        />
         <Box sx={resourceBoxHeaderStyle}>
           <PictureAsPdfOutlinedIcon sx={resourceIcon('#EF4444')} />
           <Typography fontSize={16} fontWeight={500}>
@@ -195,7 +218,11 @@ function Activitie() {
           </Typography>
         </Box>
         
-        <Pdf link='https://fad.umi.ac.ma/mod/resource/view.php?id=41659'/>
+        <Pdf pdfId={2} link='https://fad.umi.ac.ma/mod/resource/view.php?id=41659' handleDelete={(e)=>handleDelete(e,'pdf',2)} handleModify={(e) => handleModify(e, {
+            id: 5, // Ajouter un ID unique
+            type: 'pdf',
+            pdfUrl:'https://fad.umi.ac.ma/mod/resource/view.php?id=41659',
+          })}/>
 
         <Box sx={resourceBoxHeaderStyle}>
           <HelpOutlineIcon sx={resourceIcon('#22C55E')} />
@@ -203,8 +230,29 @@ function Activitie() {
             Quiz
           </Typography>
         </Box>
-        <Quiz question="Which of the following is NOT a JavaScript data type?" options={["string", "boolean", "float", "object"]} correctAnswer="float" />
-        <Quiz question="What is the result of 2 + '2' in JavaScript?" options={["22", "4", "undefined", "NaN"]} correctAnswer="22" />
+        <Quiz quizId={4} question="Which of the following is NOT a JavaScript data type?" options={["string", "boolean", "float", "object"]} correctAnswer="float" handleDelete={(e)=>handleDelete(e,'quiz',5)} 
+          handleModify={(e) => handleModify(e ,{
+            id: 4,
+            type: 'quiz',
+            quizQuestion:'"Which of the following is NOT a JavaScript data type?',
+            quizOptions:["string", "boolean", "float", "object"],
+            quizCorrectAnswer : 'float'
+          })} />
+        <Quiz quizId={6} question="What is the result of 2 + '2' in JavaScript?" options={["22", "4", "undefined", "NaN"]} correctAnswer="22" handleDelete={(e)=>handleDelete(e,'quiz',5)} 
+          handleModify={(e) => handleModify(e,{
+            id: 4,
+            type: 'quiz',
+            quizQuestion:'"Which of the following is NOT a JavaScript data type?',
+            quizOptions:["string", "boolean", "float", "object"],
+            quizCorrectAnswer : 'float'
+          })} />
+        {role === 'admin' && showNewActivityForm && (
+          <ActivityManagement 
+            setShowNewActivityForm={setShowNewActivityForm} 
+            onSubmit={selectedResourceData ? handleModify : handleAddResource}
+            ActivitiesData={selectedResourceData}
+          />
+)}
       </Box>
     </Container>
   );

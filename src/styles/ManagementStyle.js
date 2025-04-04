@@ -1,4 +1,4 @@
-import { height, minHeight } from "@mui/system"
+import { height, maxHeight, minHeight } from "@mui/system"
 
 const adminDeleteButton={
     backgroundColor: "#D32F2F",
@@ -61,7 +61,7 @@ const GlobaladminFormContainer= {
   alignItems: "center",
   zIndex: 99,
 }
-const boxadminForm={backgroundColor:'#FFFFFF',borderRadius:2,p:'1.5rem',width:'30%',overflow: 'hidden',position: 'relative'}
+const boxadminForm={backgroundColor:'#FFFFFF',borderRadius:2,p:'1.5rem',width:'30%',overflow: 'auto',position: 'relative',maxHeight:'90%',}
 
 const formadminTitle={fontFamily:'inherit',fontWeight:'600',fontSize:'1.125rem',mb:2,maxWidth: "100%"}
 

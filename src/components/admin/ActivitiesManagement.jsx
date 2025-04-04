@@ -8,53 +8,51 @@ import { formadminTitle, boxadminForm, adminButtonContainer, adminAnnulerButton,
 import { type } from "@testing-library/user-event/dist/type/index.js";
 
 
+const RESOURCE_TYPES = {
+  VIDEO: 'video',
+  PDF: 'pdf',
+  QUIZ: 'quiz'
+};
 
+const INITIAL_STATE = {
+  type: RESOURCE_TYPES.VIDEO,
+  video: { videoUrl: '' },
+  pdf: { pdfTitle: '', pdfUrl: '' },
+  quiz: { 
+    quizQuestion: '', 
+    quizOptions: Array(4).fill(''), 
+    quizCorrectAnswer: '' 
+  }
+};
 
 function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit}) {
-  const [selectedResource, setSelectedResource] = useState('video');//ici il recupere le type de recource
-  const [formData, setFormData] = useState({
-    type: 'video',
-    video: {videoUrl: ''},
-    pdf: { pdfTitle: '', pdfUrl: '' },
-    quiz: { quizQuestion: '', quizOptions: ['', '', '', ''], quizCorrectAnswer: ''}
-  });
-   
+  const isEditMode = !!ActivitiesData;
+  const [formData, setFormData] = useState(useState(INITIAL_STATE));
+  const [errors, setErrors] = useState(useState(INITIAL_STATE));
 
-  const [errors, setErrors] = useState({
-    type: 'video',
-    video: {videoUrl: ''},
-    pdf: { pdfTitle: '', pdfUrl: '' },
-    quiz: { quizQuestion: '', quizOptions: ['', '', '', ''], quizCorrectAnswer: ''}
-  });
 
-  const handleResourceChange = (resourceType) => {
-    setSelectedResource(resourceType);
-    setFormData((prev) => ({
-      ...prev,
-      type: resourceType,
-      [resourceType]: prev[resourceType] || {}, // seulement por assure que l'objet existe
-    }));
+  const handleResourceChange = (type) => {
+    setFormData(prev => ({ ...prev, type }));
   };
 
-  useEffect(() => {
-    if (ActivitiesData) {
+   useEffect(() => {
+    if (isEditMode) {
       setFormData({
         type: ActivitiesData.type,
         [ActivitiesData.type]: ActivitiesData
       });
     }
-  }, [ActivitiesData]);
+  }, [ActivitiesData, isEditMode]);
 
   const handleChange = (event) => { 
     const { name, value } = event.target;
-    setFormData(
-          { ...formData,
-            [selectedResource]: {
-                ...formData[selectedResource],
-                [name] : value
-                } 
-          }
-        ); 
+    setFormData((prev) => ({
+      ...prev,
+      [prev.type]: { 
+        ...prev[prev.type],
+        [name]: value
+      }
+    }));
   };
   
   const handleQuizeOptionChange = (event,index) => {
@@ -125,8 +123,8 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
 
    setErrors({
     ...errors,
-    type: selectedResource,
-    [selectedResource] : formErrors
+    type: formData.type,
+    [formData.type] : formErrors
      
   });
   
@@ -150,7 +148,7 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
     >
       <Box component='form' sx={boxadminForm}>
         <Typography component='h2' sx={formadminTitle}>
-          Ajouter un Recource
+        {isEditMode ? 'Modifier la Ressource' : 'Ajouter une Ressource'}
         </Typography>
         <Box sx={{display:'flex',flexDirection:'row',backgroundColor:'#F1F5F9',fontSize:'.5rem',fontWeight:'500',justifyContent:'space-between'}}>
             <Button sx={{backgroundColor:'#FFFFFF',flexGrow:1,m:'.5rem',color:'black',transform: 'none'}} onClick={()=>handleResourceChange('video')}>video</Button>
@@ -158,7 +156,7 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
             <Button sx={{flexGrow:1,m:'.5rem',color:'black',transform: 'none'}} onClick={()=>handleResourceChange('quiz')}>Quiz</Button>
         </Box>
 
-        {selectedResource==='video'&&
+        {formData.type==='video'&&
         <>
           <NormalInput
                     label='Url video'
@@ -170,7 +168,7 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
           />
         </>
         }
-        {selectedResource==='pdf'&&
+        {formData.type==='pdf'&&
         <>
           <NormalInput
                     label='Pdf Title'
@@ -190,7 +188,7 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
           />
         </>
         }
-        {selectedResource==='quiz'&&
+        {formData.type==='quiz'&&
         <Box sx={{width:'100%'}}>
           <NormalInput
                     label='Quiz Question'
@@ -204,7 +202,7 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
 
             {formData.quiz.quizOptions.map((option, index) => (
               <NormalInput
-                key={index}
+               
                 label={`Quiz Response ${index + 1}`}
                 placeholder="Ex : Une option de réponse"
                 name={`quizOptions${index}`}
@@ -235,7 +233,7 @@ function ActivityManagement({ setShowNewActivityForm ,ActivitiesData ,onSubmit})
             Annuler
           </Button>
           <Button sx={adminAddButton} onClick={handleSubmit}>
-            Ajouter
+            {isEditMode ? 'Modifier' : 'Ajouter'}
           </Button>
         </Box>
       </Box>
