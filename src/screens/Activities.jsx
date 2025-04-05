@@ -114,9 +114,6 @@ const Quiz = ({ quizId,question, options, correctAnswer,setShowNewActivityForm,o
 };
 const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit})=>{
 
-  
-  
-
   return (
       <Box sx={pdfResource}>
           <Typography fontSize={16} fontWeight={500}>
@@ -142,11 +139,12 @@ const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,o
 function Activitie() {
   const [role, setRole] = useState('admin');
   const [showNewActivityForm, setShowNewActivityForm] = useState(false); // État pour afficher le formulaire
-  const [currentType, setCurrentType] = useState(null);
   const [selectedResourceData, setselectedResourceData] = useState(null);
 
   const handleAddResource = (resourceData) => {
-    console.log("Données du formulaire a ajouter:", resourceData);
+    console.log("Données du formulaire à ajouter:", resourceData);
+    setShowNewActivityForm(false);
+    setselectedResourceData(null);//i
   };
 
   const handleDelete = (e,type,id) => {
@@ -159,6 +157,11 @@ function Activitie() {
     setShowNewActivityForm(true);
     setselectedResourceData(resourceData);
     console.log('add : ', resourceData);
+  };
+
+  const handleCancel = () => {
+    setShowNewActivityForm(false);
+    setselectedResourceData(null); // Réinitialiser les données de la ressource modifiée
   };
   
 
@@ -249,6 +252,7 @@ function Activitie() {
             setShowNewActivityForm={setShowNewActivityForm} 
             onSubmit={selectedResourceData ? handleModify : handleAddResource}
             ActivitiesData={selectedResourceData}
+            onCancel={handleCancel}
           />
 )}
       </Box>

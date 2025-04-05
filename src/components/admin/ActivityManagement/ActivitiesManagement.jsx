@@ -8,7 +8,7 @@ import PdfResource from './Resources/PdfResource';
 import QuizResource from './Resources/QuizResource';
 import { RESOURCE_TYPES, INITIAL_ACTIVITIES_RESOURCE_STATE } from '../../../utils/constants';
 
-function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit }) {
+function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,onCancel }) {
   const [formData, setFormData] = useState(INITIAL_ACTIVITIES_RESOURCE_STATE);
   const [errors, setErrors] = useState({});
   
@@ -27,6 +27,7 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit }
       setFormData(INITIAL_ACTIVITIES_RESOURCE_STATE);
     }
   }, [ActivitiesData, isEditMode]);
+
   const handleResourceChange = (type) => {
     setFormData(prev => ({ ...prev, type }));
     setErrors({});
@@ -134,7 +135,7 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit }
     setFormData(INITIAL_ACTIVITIES_RESOURCE_STATE);
     setErrors({});
     setShowNewActivityForm(false);
-     
+    onCancel();//il est uutiliser pour initialiser la formuulaire
   };
 
   const renderResourceForm = () => {
