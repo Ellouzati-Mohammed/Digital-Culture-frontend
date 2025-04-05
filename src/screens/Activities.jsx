@@ -26,7 +26,7 @@ import{ vidioBoxStyle,
 import { adminDeleteButton, adminButtonContainer,adminModifyButton } from '../styles/ManagementStyle.js';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
-import ActivityManagement from "../components/admin/ActivitiesManagement.jsx";
+import ActivityManagement from "../components/admin/ActivityManagement/ActivitiesManagement.jsx";
 
 
 
@@ -156,8 +156,6 @@ function Activitie() {
   };
 
   const handleModify = (e,resourceData) => {
-    e.preventDefault();
-    e.stopPropagation();
     setShowNewActivityForm(true);
     setselectedResourceData(resourceData);
     console.log('add : ', resourceData);
