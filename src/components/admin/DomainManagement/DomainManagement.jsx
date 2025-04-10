@@ -1,8 +1,8 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { NormalInput, SelectInput } from "../ValidationInputs";
-import { formadminTitle, boxadminForm, adminButtonContainer, adminAnnulerButton, adminAddButton, GlobaladminFormContainer } from '../../styles/ManagementStyle.js';
+import { NormalInput, SelectInput } from "../../ValidationInputs.jsx";
+import { formadminTitle, boxadminForm, adminButtonContainer, adminAnnulerButton, adminAddButton, GlobaladminFormContainer } from '../../../styles/ManagementStyle.js';
 
 function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
   

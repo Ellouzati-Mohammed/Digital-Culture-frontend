@@ -49,6 +49,7 @@ import { adminDeleteButton, adminButtonContainer,adminModifyButton } from '../st
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import CoursMangement from '../components/admin/CoursManagement/CoursManagement.jsx';
+import { role } from "../services/UserRole.js";
 
 
 const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Update, publiched_Date, nbr_Enroll }) => {
@@ -128,20 +129,20 @@ const Cours = ({ coursId, estimated_time_minutes, coursTitle, coursSubtitle , se
             {coursSubtitle}
           </Typography>
         </Box>
-        <Box sx={adminButtonContainer}>
+        {role === 'admin' && <Box sx={adminButtonContainer}>
           <Button onClick={handleModify} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
             Modify
           </Button>
           <Button onClick={handleDelete} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
             Delete
           </Button>
-        </Box>
+        </Box>}
       </Box>
     </Link>
   );
 };
 function AllCoursCard() {
-  const role='admin'
+ 
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   const [selectedCours, setSelectedCours] = useState(null);// le role de cet useState et de recupere le Course quonveut modifier
 
@@ -195,7 +196,7 @@ function AllCoursCard() {
   )
 }
 export default function CoursDomain() {
-  const [role, setRole] = useState('admin');
+ 
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   
   const handleAddCours = (formData) => {
@@ -206,7 +207,7 @@ export default function CoursDomain() {
   return (
     <Container maxWidth="lg" disableGutters sx={CoursDomainContainer}>
       <Box sx={CoursDomainSecContainer}>
-        <Box sx={headerManagementTitle}>
+        {role === 'admin' && <Box sx={headerManagementTitle}>
           <Typography variant="h3" sx={titleManagementtxt}>
             Gestion des Cours
           </Typography>
@@ -219,6 +220,7 @@ export default function CoursDomain() {
             Nouveau Cours
           </Button>
         </Box>
+        }
         {role === "admin" && showNewCoursForm && (
           <CoursMangement setShowNewCoursForm={setShowNewCoursForm}
           onSubmit={handleAddCours}

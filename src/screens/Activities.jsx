@@ -27,7 +27,7 @@ import { adminDeleteButton, adminButtonContainer,adminModifyButton } from '../st
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import ActivityManagement from "../components/admin/ActivityManagement/ActivitiesManagement.jsx";
-
+import { role } from "../services/UserRole.js";
 
 
 
@@ -45,14 +45,14 @@ const Video = ({ videoId,videoUrl,setShowNewActivityForm,onType,handleDelete,han
         allowFullScreen
         style={{ borderRadius: "12px" }}
       ></iframe>
-      <Box sx={adminButtonContainer}>
+      {role === 'admin' &&<Box sx={adminButtonContainer}>
         <Button onClick={(e) => handleModify(e, "video")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
           Modify
         </Button>
         <Button onClick={(e) => handleDelete(e, "video")} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
           Delete
         </Button>
-      </Box>
+      </Box>}
     </Box>
     
     </>
@@ -99,12 +99,12 @@ const Quiz = ({ quizId,question, options, correctAnswer,setShowNewActivityForm,o
         <Box sx={submitButtonStyleBox}>
           <Button type="submit" sx={submitButtonStyle}>Submit</Button>
          
-            <Button onClick={(e) => handleModify(e, "quiz")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
+          { role === 'admin' && <><Button onClick={(e) => handleModify(e, "quiz")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
               Modify
             </Button>
             <Button onClick={(e) => handleDelete(e, "quiz")} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
               Delete
-            </Button>
+            </Button></>}
           
         </Box>
         
@@ -122,14 +122,14 @@ const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,o
           <Link href={link} download sx={pdfLinkBoxStyle}>
             <CloudDownload sx={{ mr: 1 }} /> Télécharger le PDF
           </Link>
-          <Box sx={adminButtonContainer}>
+         {role === 'admin' && <Box sx={adminButtonContainer}>
             <Button onClick={(e) => handleModify(e, "pdf")} sx={adminModifyButton} startIcon={<EditOutlinedIcon />}>
               Modify
             </Button>
             <Button onClick={(e) => handleDelete(e, "pdf")} sx={adminDeleteButton} startIcon={<DeleteOutlinedIcon />}>
               Delete
             </Button>
-        </Box>
+        </Box>}
       </Box>
   )
 }
@@ -137,7 +137,7 @@ const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,o
 
 
 function Activitie() {
-  const [role, setRole] = useState('admin');
+
   const [showNewActivityForm, setShowNewActivityForm] = useState(false); // État pour afficher le formulaire
   const [selectedResourceData, setselectedResourceData] = useState(null);
 
@@ -167,14 +167,14 @@ function Activitie() {
 
   return (
     <Container disableGutters={true} sx={activitieContainerStyle}>
-      <Box sx={headerManagementTitle}>
+      {role === 'admin' && <Box sx={headerManagementTitle}>
         <Typography variant="h3" sx={titleManagementtxt}>
           Gestion des Ressources
         </Typography>
         <Button variant="contained" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => setShowNewActivityForm(true)} sx={addButton}>
           Nouveau Ressource
         </Button>
-      </Box>
+      </Box>}
       {role === "admin" && showNewActivityForm && (
           <ActivityManagement setShowNewActivityForm={setShowNewActivityForm} onSubmit={handleAddResource} />
       )}

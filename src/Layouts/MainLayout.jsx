@@ -4,10 +4,11 @@ import {AppMain,AppContainer} from '../styles/AppStyle.js'
 import Navbar from "../components/NavBar.jsx";
 import Sidebar from "../components/SideBar.jsx";
 import { useLocation } from "react-router-dom";
+import { role } from "../services/UserRole.js";
 
 const MainLayout = ({ children }) => {
     const location = useLocation();
-    const role='admin'
+
     const hideLayout = ["/signup", "/signin"].includes(location.pathname.toLowerCase());
   return (
     <div className="App" style={AppContainer}>

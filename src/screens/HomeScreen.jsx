@@ -5,11 +5,12 @@ import {HomeBox,WelcomCardMotivation,WelcomCardMotivationBox,WelcomCardMotivatio
 import React, { lazy, useEffect, useMemo, useState } from "react";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
-import DomainMangement from "../components/admin/DomainManagement";
+import DomainMangement from "../components/admin/DomainManagement/DomainManagement";
+import { role } from "../services/UserRole";
 
 
 function HomeScreen(){
-  const [role, setRole] = useState('admin');
+
   const [showNewDomainForm, setShowNewDomainForm] = useState(false); // État pour afficher le formulaire
 
   const handleAddDomain = (formData) => {
@@ -28,7 +29,7 @@ function HomeScreen(){
                 </Typography>
               </Box>
             </Box>}
-
+            {role === "admin" && showNewDomainForm && (<>
             <Box sx={headerManagementTitle}> 
                 <Typography variant="h3" sx={titleManagementtxt}>
                 Gestion des Domaines
@@ -42,13 +43,14 @@ function HomeScreen(){
                   Nouveau Domaine
                 </Button>
             </Box>
-            {role === "admin" && showNewDomainForm && (
+            
                 <DomainMangement 
                    setShowNewDomainForm={setShowNewDomainForm} 
                    onSubmit={handleAddDomain} 
                 />
+              </>
             )}
-            <AllDomainsCard role={role}/>
+            <AllDomainsCard/>
         </Box>
     )
 }

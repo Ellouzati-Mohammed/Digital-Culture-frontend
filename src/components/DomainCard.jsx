@@ -19,9 +19,10 @@ import {
   LinkCardDomain 
 } from '../styles/DomainCardStyle.js';
 import { adminDeleteButton, adminButtonContainer, adminModifyButton } from '../styles/ManagementStyle.js';
-import DomainManagement from "./admin/DomainManagement.jsx";
+import DomainManagement from "./admin/DomainManagement/DomainManagement.jsx";
+import { role } from "../services/UserRole.js";
 
-const DomainCard = React.memo(({ domainId, domainTitle ,domainDecription,level,domainImageUrl, role,setShowNewDomainForm, onEdit}) => {
+const DomainCard = React.memo(({ domainId, domainTitle ,domainDecription,level,domainImageUrl,setShowNewDomainForm, onEdit}) => {
 
   const handleDelete = useCallback((e) => {
     e.preventDefault();
@@ -82,11 +83,13 @@ const DomainCard = React.memo(({ domainId, domainTitle ,domainDecription,level,d
 });
 
 // AllDomainsCard Component
-function AllDomainsCard({ role }) {
-
+function AllDomainsCard() {
+  
   const [domains, setDomains] = useState(domain); // Initialisation des domaines
   const [showNewDomainForm, setShowNewDomainForm] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState(null);// le role de cet useState et de recupere le domaine quonveut modifier
+
+
 
   const handleModifyDomain = (formData) => {
     console.log("les nv Données du formulaire modifier:", formData);
@@ -102,7 +105,7 @@ function AllDomainsCard({ role }) {
             level={domainItem.level}
             domainImageUrl={domainItem.domainImageUrl}
             domainDecription={domainItem.domainDecription}
-            role={role}
+           
             setShowNewDomainForm={setShowNewDomainForm}
             onEdit={setSelectedDomain}
           />
