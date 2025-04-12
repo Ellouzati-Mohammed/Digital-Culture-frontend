@@ -26,6 +26,7 @@ const useCourses = () => {
     setError(null);
     try {
       const response = await createDomainCourse(data);
+  
       setCours((prev) => ({
         ...prev, 
         courses: [...prev.courses, response.data] // Met à jour uniquement le tableau de cours
@@ -44,11 +45,13 @@ const useCourses = () => {
     setError(null);
     try {
       const response = await updateDomainCourse(id, data);
-      setCours((prev) => 
-        prev.map(cours => 
-          cours.id === id ? { ...cours, ...response.data } : cours
-        )
-      );
+      
+      setCours((prev) => ({
+        ...prev, 
+        courses: prev.courses.map(course => 
+          course.id === id ? { ...course, ...response.data } : course // Remplace le cours par ses nouvelles données
+        ),
+      }));
     } catch (err) {
       setError(err.message || 'Erreur lors de la mise à jour du cours');
     } finally {
@@ -62,7 +65,10 @@ const useCourses = () => {
     setError(null);
     try {
       await deleteDomainCourse(id);
-      setCours((prev) => prev.filter(cours => cours.id !== id));
+      setCours(prev => ({
+        ...prev,
+        courses: prev.courses.filter(course => course.id !== id)
+      }));
     } catch (err) {
       setError(err.message || 'Erreur lors de la suppression du cours');
     } finally {

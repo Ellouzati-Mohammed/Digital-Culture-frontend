@@ -113,8 +113,9 @@ const Cours = ({ id, duration, cours_title, cours_description , setShowNewCoursF
     const handleModify = useCallback((e) => {
       e.preventDefault();
       e.stopPropagation();
-      onEdit({ id: id , cours_title: cours_title , cours_description : cours_description , duration :duration});
       setShowNewCoursForm(true);
+      onEdit({ id: id , cours_title: cours_title , cours_description : cours_description , duration :duration});
+      
     }, []);
 
   return (
@@ -145,63 +146,20 @@ const Cours = ({ id, duration, cours_title, cours_description , setShowNewCoursF
     </Link>
   );
 };
-function AllCoursCard({ courses = [], loading,DominId }) {
+function AllCoursCard({ courses = [], loading,onDeleteRequest,onEdit}) {
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   const [selectedCours, setSelectedCours] = useState(null); // Pour modification
-  const {deleteExistingCours,fetchCourses } = useCourses();
-  const [deleteConfirmation,setDeleteConfirmation] = useState({
-      isOpen: false,
-      CoursId: null,
-      CoursTitle:''
-    }); 
+
 
   const handleModifyDomain = (formData) => {
-    console.log("Données modifiées :", formData);
-    // ici tu peux appeler updateExistingCours(formData.id, formData) si besoin
+    onEdit(formData);
   };
 
-  const handleDeleteRequest = useCallback((CoursId, CoursTitle) => {
-      setDeleteConfirmation({
-        isOpen: true,
-        CoursId,
-        CoursTitle
-      });
-    }, []);
 
-  const handleConfirmDelete = useCallback(async () => {
-      if (deleteConfirmation.CoursId) {
-        try {
-          await deleteExistingCours(deleteConfirmation.CoursId);
-          await fetchCourses(DominId);
-        } finally {
-          setDeleteConfirmation({ isOpen: false, CoursId: null,CoursTitle:'' });
-        }
-      }
-    }, [deleteConfirmation]);
-    const handleCancelDelete = useCallback(() => {
-      setDeleteConfirmation({ isOpen: false, CoursId: null ,CoursTitle:''});
-    }, []);
 
   return (
     <Box sx={AllCoursContainer}>
-       <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
-              <DialogTitle>Confirmer la suppression</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Êtes-vous sûr de vouloir supprimer le domaine "{deleteConfirmation.CoursTitle}" ?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCancelDelete}>Annuler</Button>
-                <Button 
-                  onClick={handleConfirmDelete} 
-                  color="error"
-                  disabled={loading}
-                >
-                  Confirmer
-                </Button>
-              </DialogActions>
-            </Dialog>
+       
       <Box sx={AllCoursSecContainer}>
         <Typography variant="h2" sx={HeaderTitle}>
           Course Content
@@ -221,7 +179,7 @@ function AllCoursCard({ courses = [], loading,DominId }) {
               cours_description={cours.cours_description}
               onEdit={setSelectedCours}
               setShowNewCoursForm={setShowNewCoursForm}
-              onDelete={handleDeleteRequest}
+              onDelete={onDeleteRequest}
             />
           ))
         )}
@@ -241,7 +199,13 @@ export default function CoursDomain() {
  
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   const { DomainId } = useParams(); //pour recuuprer l'id depuis l'url
-  const {courses,loading,fetchCourses,createNewCours,deleteExistingCours } = useCourses();
+  const {courses,loading,fetchCourses,createNewCours,deleteExistingCours,updateExistingCours } = useCourses();
+  const [deleteConfirmation,setDeleteConfirmation] = useState({
+    isOpen: false,
+    CoursId: null,
+    CoursTitle:''
+  }); 
+
   
   useEffect(() => {
       fetchCourses(DomainId);
@@ -250,20 +214,70 @@ export default function CoursDomain() {
 
   const handleAddCours = async (formData) => {
     try {
-      formData.domain_id = DomainId;//ajouter le champs domain id qiu est dans luurl
+      formData.domain_id = DomainId;//ajouter le champs domain id qiu est dans lurl
       await createNewCours(formData,DomainId); 
       await fetchCourses();
       setShowNewCoursForm(false);
     } catch (error) {
       console.error("Erreur lors de la mise à jour du domaine : ", error);
     }
-    
-    console.log("Données du formulaire a ajouter:", formData);
   };
+
+  const handleModifyCours = async (formData) => {
+    try {
+      await updateExistingCours(formData.id,formData); 
+      await fetchCourses(DomainId);
+      setShowNewCoursForm(false);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du domaine : ", error);
+    }
+  };
+
+    const handleDeleteRequest = useCallback((CoursId, CoursTitle) => {
+        setDeleteConfirmation({
+          isOpen: true,
+          CoursId,
+          CoursTitle
+        });
+    }, []);
+
+    const handleConfirmDelete = useCallback(async () => {
+        if (deleteConfirmation.CoursId) {
+          try {
+            await deleteExistingCours(deleteConfirmation.CoursId);
+            await fetchCourses(DomainId);
+          } finally {
+            setDeleteConfirmation({ isOpen: false, CoursId: null,CoursTitle:'' });
+          }
+        }
+      }, [deleteConfirmation]);
+      const handleCancelDelete = useCallback(() => {
+        setDeleteConfirmation({ isOpen: false, CoursId: null ,CoursTitle:''});
+      }, []);
   
 
   return (
     <Container maxWidth="lg" disableGutters sx={CoursDomainContainer}>
+
+      <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
+              <DialogTitle>Confirmer la suppression</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Êtes-vous sûr de vouloir supprimer le domaine "{deleteConfirmation.CoursTitle}" ?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCancelDelete}>Annuler</Button>
+                <Button 
+                  onClick={handleConfirmDelete} 
+                  color="error"
+                  disabled={loading}
+                >
+                  Confirmer
+                </Button>
+              </DialogActions>
+      </Dialog>
+
       <Box sx={CoursDomainSecContainer}>
         {role === 'admin' && <Box sx={headerManagementTitle}>
           <Typography variant="h3" sx={titleManagementtxt}>
@@ -292,7 +306,7 @@ export default function CoursDomain() {
           publiched_Date={courses.created_at}
           nbr_Enroll={1500}
         />
-       <AllCoursCard courses={courses.courses} loading={loading} DominId={DomainId} />
+       <AllCoursCard courses={courses.courses} loading={loading} DominId={DomainId} onDeleteRequest={handleDeleteRequest} onEdit={handleModifyCours} />
       </Box>
     </Container>
   );
