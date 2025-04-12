@@ -7,26 +7,28 @@ import { formadminTitle, boxadminForm, adminButtonContainer, adminAnnulerButton,
 function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
   
   const [formData, setFormData] = useState({
-    domainTitle: "",
-    domainDecription: "",
+    id : null,
+    domain_title: "",
+    domain_description: "",
     level: "",
-    domainImageUrl: "",
+    domain_image_url: "",
   });
 
   const [errors, setErrors] = useState({
-    domainTitle: "",
-    domainDecription: "",
+    domain_title: "",
+    domain_description: "",
     level: "",
-    domainImageUrl: ""
+    domain_image_url: ""
   });
 
   useEffect(() => {
     if (domainData) {
       setFormData({
-        domainTitle: domainData.domainTitle || "",
-        domainDecription: domainData.domainDecription || "",
+        id: domainData.id || null,
+        domain_title: domainData.domain_title || "",
+        domain_description: domainData.domain_description || "",
         level: domainData.level || "",
-        domainImageUrl: domainData.domainImageUrl || "",
+        domain_image_url: domainData.domain_image_url || "",
       });
     }
   }, [domainData]);
@@ -44,13 +46,13 @@ function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
     let formErrors = {};
     let isValid = true;
 
-    if (!formData.domainTitle) {
-      formErrors.domainTitle = "Le nom du domaine est requis";
+    if (!formData.domain_title) {
+      formErrors.domain_title = "Le nom du domaine est requis";
       isValid = false;
     }
 
-    if (!formData.domainDecription) {
-      formErrors.domainDecription = "La domainDecription est requise";
+    if (!formData.domain_description) {
+      formErrors.domain_description = "La domain_description est requise";
       isValid = false;
     }
 
@@ -59,8 +61,8 @@ function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
       isValid = false;
     }
 
-    if (!formData.domainImageUrl) {
-      formErrors.domainImageUrl = "L'URL de l'image est requise";
+    if (!formData.domain_image_url) {
+      formErrors.domain_image_url = "L'URL de l'image est requise";
       isValid = false;
     }
 
@@ -83,18 +85,18 @@ function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
         <NormalInput
           label='Nom du Domaine'
           placeholder='Ex : Machine Learning'
-          name='domainTitle'
-          value={formData.domainTitle}
+          name='domain_title'
+          value={formData.domain_title}
           setValue={handleChange}
-          error={errors.domainTitle}
+          error={errors.domain_title}
         />
         <NormalInput
-          label='domainDecription'
+          label='domain_description'
           placeholder='Ex : Machine Learning'
-          name='domainDecription'
-          value={formData.domainDecription}
+          name='domain_description'
+          value={formData.domain_description}
           setValue={handleChange}
-          error={errors.domainDecription}
+          error={errors.domain_description}
           multiline={true}
         />
         <SelectInput
@@ -104,19 +106,19 @@ function DomainMangement({ setShowNewDomainForm , domainData , onSubmit}) {
           value={formData.level}
           setValue={handleChange}
           options={[
-            { value: 1, label: 'Machine Learning' },
-            { value: 2, label: 'Data Science' },
-            { value: 3, label: 'AI' }
+            { value: 'beginner', label: 'beginner' },
+            { value: 'intermediate', label: 'intermediate' },
+            { value: 'advanced', label: 'advanced' }
           ]}
           error={errors.level}
         />
         <NormalInput
           label="URL de l'image"
           placeholder='Ex : https://example.com/image.jpg'
-          name='domainImageUrl'
-          value={formData.domainImageUrl}
+          name='domain_image_url'
+          value={formData.domain_image_url}
           setValue={handleChange}
-          error={errors.domainImageUrl}
+          error={errors.domain_image_url}
         />
         <Box sx={adminButtonContainer}>
           <Button sx={adminAnnulerButton} onClick={handleCancel}>

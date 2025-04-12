@@ -1,2 +1,2 @@
 
-export const role="user";
+export const role="admin";

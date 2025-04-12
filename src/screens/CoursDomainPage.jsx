@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -18,7 +18,7 @@ import {
   Grid,
   IconButton,
   useTheme,
-  Button
+  Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
 import {
   Home as HomeIcon,
@@ -38,7 +38,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import TimeDifference from '../services/TimeDifference';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {CoursboxStyle,CoursContainer,CoursTime,CoursTimeTxt,CoursTiltleTxt,CoursSubTiltleTxt,TaskIcon,RadioBut,CoursDomainContainer
   ,SelectedDomainContainer,SelectedDomainGlobalInfoText,SelectedDomainGlobalInfoItem,SelectedDomainchildrenContainer,SelectedDomainLevel,SelectedDomainnbrCours,
   SelectedDomainTitle,SelectedDomainDescription,SelectedDomainGlobalInfoContainer,CoursDomainSecContainer,AllCoursContainer,AllCoursSecContainer,HeaderTitle
@@ -50,6 +50,9 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import CoursMangement from '../components/admin/CoursManagement/CoursManagement.jsx';
 import { role } from "../services/UserRole.js";
+import useDomaines from "../hooks/useDomains.js";
+import useCourses from "../hooks/useCourses.js";
+import { getDomainCourses } from "../services/DomainCoursesService.js";
 
 
 const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Update, publiched_Date, nbr_Enroll }) => {
@@ -98,35 +101,36 @@ const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Up
   );
 }
 
-const Cours = ({ coursId, estimated_time_minutes, coursTitle, coursSubtitle , setShowNewCoursForm , onEdit}) => {
+const Cours = ({ id, duration, cours_title, cours_description , setShowNewCoursForm , onEdit,onDelete}) => {
 
-   const handleDelete = useCallback((e) => {
+  
+    const handleDelete = useCallback((e) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('delet Cours ID:', coursId);
-    }, []);
+      onDelete(id, cours_title);
+    }, [id, onDelete,cours_title]);
   
     const handleModify = useCallback((e) => {
       e.preventDefault();
       e.stopPropagation();
-      onEdit({ id: coursId , coursTitle: coursTitle , coursSubtitle : coursSubtitle , estimated_time_minutes :estimated_time_minutes});
+      onEdit({ id: id , cours_title: cours_title , cours_description : cours_description , duration :duration});
       setShowNewCoursForm(true);
     }, []);
 
   return (
-    <Link to={`/DomainsCours/Activities/${coursId}`} style={{ textDecoration: 'none' }}>
+    <Link to={`/DomainsCours/Activities/${id}`} style={{ textDecoration: 'none' }}>
       <Box sx={CoursboxStyle}>
         <Box sx={CoursContainer}>
           <Box sx={CoursTime}>
             <Typography variant="span" sx={CoursTimeTxt}>
-              {estimated_time_minutes}min
+              {duration}min
             </Typography>
           </Box>
           <Typography variant="h3" sx={CoursTiltleTxt}>
-            {coursTitle}
+            {cours_title}
           </Typography>
           <Typography variant="p" sx={CoursSubTiltleTxt}>
-            {coursSubtitle}
+            {cours_description}
           </Typography>
         </Box>
         {role === 'admin' && <Box sx={adminButtonContainer}>
@@ -141,65 +145,119 @@ const Cours = ({ coursId, estimated_time_minutes, coursTitle, coursSubtitle , se
     </Link>
   );
 };
-function AllCoursCard() {
- 
+function AllCoursCard({ courses = [], loading,DominId }) {
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
-  const [selectedCours, setSelectedCours] = useState(null);// le role de cet useState et de recupere le Course quonveut modifier
+  const [selectedCours, setSelectedCours] = useState(null); // Pour modification
+  const {deleteExistingCours,fetchCourses } = useCourses();
+  const [deleteConfirmation,setDeleteConfirmation] = useState({
+      isOpen: false,
+      CoursId: null,
+      CoursTitle:''
+    }); 
 
   const handleModifyDomain = (formData) => {
-    console.log("les nv Données du formulaire modifier:", formData);
+    console.log("Données modifiées :", formData);
+    // ici tu peux appeler updateExistingCours(formData.id, formData) si besoin
   };
 
-  return(
-        <Box sx={AllCoursContainer}>
-          <Box sx={AllCoursSecContainer}>
-            <Typography variant="h2" sx={HeaderTitle}>
-              Course Content
-            </Typography>
+  const handleDeleteRequest = useCallback((CoursId, CoursTitle) => {
+      setDeleteConfirmation({
+        isOpen: true,
+        CoursId,
+        CoursTitle
+      });
+    }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+      if (deleteConfirmation.CoursId) {
+        try {
+          await deleteExistingCours(deleteConfirmation.CoursId);
+          await fetchCourses(DominId);
+        } finally {
+          setDeleteConfirmation({ isOpen: false, CoursId: null,CoursTitle:'' });
+        }
+      }
+    }, [deleteConfirmation]);
+    const handleCancelDelete = useCallback(() => {
+      setDeleteConfirmation({ isOpen: false, CoursId: null ,CoursTitle:''});
+    }, []);
+
+  return (
+    <Box sx={AllCoursContainer}>
+       <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
+              <DialogTitle>Confirmer la suppression</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Êtes-vous sûr de vouloir supprimer le domaine "{deleteConfirmation.CoursTitle}" ?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCancelDelete}>Annuler</Button>
+                <Button 
+                  onClick={handleConfirmDelete} 
+                  color="error"
+                  disabled={loading}
+                >
+                  Confirmer
+                </Button>
+              </DialogActions>
+            </Dialog>
+      <Box sx={AllCoursSecContainer}>
+        <Typography variant="h2" sx={HeaderTitle}>
+          Course Content
+        </Typography>
+
+        {loading ? (
+          <Typography>Chargement des cours...</Typography>
+        ) : courses.length === 0 ? (
+          <Typography>Aucun cours trouvé.</Typography>
+        ) : (
+          courses.map((cours) => (
             <Cours
-              
-              coursId={1}
-              estimated_time_minutes={15}
-              coursTitle="Introduction to JavaScript"
-              coursSubtitle="An overview of JavaScript and its role in web development."
+              key={cours.id}
+              id={cours.id}
+              duration={cours.duration}
+              cours_title={cours.cours_title}
+              cours_description={cours.cours_description}
               onEdit={setSelectedCours}
               setShowNewCoursForm={setShowNewCoursForm}
+              onDelete={handleDeleteRequest}
             />
-            <Cours
-              
-              coursId={2}
-              estimated_time_minutes={15}
-              coursTitle="Introduction to JavaScript"
-              coursSubtitle="An overview of JavaScript and its role in web development."
-              onEdit={setSelectedCours}
-              setShowNewCoursForm={setShowNewCoursForm}
-            />
-            <Cours
-              
-              coursId={3}
-              estimated_time_minutes={15}
-              coursTitle="Introduction to JavaScript"
-              coursSubtitle="An overview of JavaScript and its role in web development."
-              onEdit={setSelectedCours}
-              setShowNewCoursForm={setShowNewCoursForm}
-            />
-            
-          </Box>
-          {role === "admin" && showNewCoursForm && (
-                <CoursMangement 
-                   setShowNewCoursForm={setShowNewCoursForm} 
-                   onSubmit={handleModifyDomain}
-                   CoursData={selectedCours}
-                />
-            )}
-         </Box>
-  )
+          ))
+        )}
+      </Box>
+
+      {role === "admin" && showNewCoursForm && (
+        <CoursMangement 
+          setShowNewCoursForm={setShowNewCoursForm} 
+          onSubmit={handleModifyDomain}
+          CoursData={selectedCours}
+        />
+      )}
+    </Box>
+  );
 }
 export default function CoursDomain() {
  
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
+  const { DomainId } = useParams(); //pour recuuprer l'id depuis l'url
+  const {courses,loading,fetchCourses,createNewCours,deleteExistingCours } = useCourses();
   
-  const handleAddCours = (formData) => {
+  useEffect(() => {
+      fetchCourses(DomainId);
+    }, [DomainId, fetchCourses]);
+
+
+  const handleAddCours = async (formData) => {
+    try {
+      formData.domain_id = DomainId;//ajouter le champs domain id qiu est dans luurl
+      await createNewCours(formData,DomainId); 
+      await fetchCourses();
+      setShowNewCoursForm(false);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du domaine : ", error);
+    }
+    
     console.log("Données du formulaire a ajouter:", formData);
   };
   
@@ -228,13 +286,13 @@ export default function CoursDomain() {
         )}
         <SelctedDomainInfo
           nbrCours={10}
-          domain_Title="Développement Web"
-          domain_Description="Apprenez le développement web moderne avec React et Node.js."
-          last_Update="12 Mars 2025"
-          publiched_Date="10 Janvier 2024"
+          domain_Title={courses.domain_title}
+          domain_Description={courses.domain_description}
+          last_Update={courses.updated_at}
+          publiched_Date={courses.created_at}
           nbr_Enroll={1500}
         />
-        <AllCoursCard />
+       <AllCoursCard courses={courses.courses} loading={loading} DominId={DomainId} />
       </Box>
     </Container>
   );

@@ -16,8 +16,9 @@ export const RESOURCE_TYPES = {
   };
 
   export const INITIAL_COURS_STATE = {
-    coursTitle: "",
-    coursSubtitle: "",
-    estimated_time_minutes: ""
+    id:null,
+    cours_title: "",
+    cours_description: "",
+    duration: ""
   };
   

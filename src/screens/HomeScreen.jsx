@@ -7,14 +7,23 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import DomainMangement from "../components/admin/DomainManagement/DomainManagement";
 import { role } from "../services/UserRole";
+import useDomaines from "../hooks/useDomains";
 
 
 function HomeScreen(){
 
   const [showNewDomainForm, setShowNewDomainForm] = useState(false); // État pour afficher le formulaire
+  const { domaines, loading, fetchDomaines,updateExistingDomaine,createNewDomaine,deleteExistingDomaine } = useDomaines();
 
-  const handleAddDomain = (formData) => {
-    console.log("Données du formulaire a ajouter:", formData);
+  const handleAddDomain = async (formData) => {
+
+    try {
+      await createNewDomaine(formData); 
+      await fetchDomaines();
+      setShowNewDomainForm(false);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du domaine : ", error);
+    }
   };
 
     return (
@@ -29,28 +38,33 @@ function HomeScreen(){
                 </Typography>
               </Box>
             </Box>}
-            {role === "admin" && showNewDomainForm && (<>
-            <Box sx={headerManagementTitle}> 
+            {role === "admin" && (
+              <Box sx={headerManagementTitle}> 
                 <Typography variant="h3" sx={titleManagementtxt}>
-                Gestion des Domaines
+                  Gestion des Domaines
                 </Typography>
                 <Button
                   variant="contained"
-                  startIcon={<AddCircleOutlineOutlinedIcon/>}
+                  startIcon={<AddCircleOutlineOutlinedIcon />}
                   sx={addButton}
                   onClick={() => setShowNewDomainForm(true)}
                 >
                   Nouveau Domaine
                 </Button>
-            </Box>
-            
-                <DomainMangement 
-                   setShowNewDomainForm={setShowNewDomainForm} 
-                   onSubmit={handleAddDomain} 
-                />
-              </>
+              </Box>
             )}
-            <AllDomainsCard/>
+
+            {role === "admin" && showNewDomainForm && (
+              <DomainMangement 
+                setShowNewDomainForm={setShowNewDomainForm} 
+                onSubmit={handleAddDomain} 
+              />
+            )}
+            <AllDomainsCard domaines={domaines}
+  fetchDomaines={fetchDomaines}
+  deleteExistingDomaine={deleteExistingDomaine}
+  updateExistingDomaine={updateExistingDomaine}
+  loading={loading}/>
         </Box>
     )
 }

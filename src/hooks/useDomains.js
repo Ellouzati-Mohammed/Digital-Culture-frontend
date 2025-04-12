@@ -1,50 +1,47 @@
-// src/hooks/useDomaines.js
-import { useState } from 'react';
-import { getDomaines, createDomaine, updateDomaine, deleteDomaine } from '../services/DomainService'; // Adaptez le chemin
+import { useState, useCallback } from 'react'; // Ajouter useCallback
+import { getDomains, createDomain, updateDomain, deleteDomain } from '../services/DomainService';
 
-// Hook personnalisé
 const useDomaines = () => {
   const [domaines, setDomaines] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
-
-  const fetchDomaines = async () => {
+  // Mémoiser fetchDomaines
+  const fetchDomaines = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getDomaines();
-      setDomaines(response.data); 
+      const response = await getDomains();
+      setDomaines(response.data);
     } catch (err) {
       setError(err.message || 'Erreur lors de la récupération des domaines');
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // Aucune dépendance nécessaire
 
-
-  const createNewDomaine = async (data) => {
+  // Mémoiser createNewDomaine
+  const createNewDomaine = useCallback(async (data) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await createDomaine(data);
-      setDomaines((prevDomaines) => [...prevDomaines, response.data]); // Ajouter le nouveau domaine à la liste
+      const response = await createDomain(data);
+      setDomaines((prev) => [...prev, response.data]);
     } catch (err) {
       setError(err.message || 'Erreur lors de la création du domaine');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-
-  const updateExistingDomaine = async (id, data) => {
+  // Mémoiser updateExistingDomaine
+  const updateExistingDomaine = useCallback(async (id, data) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await updateDomaine(id, data);
-      setDomaines((prevDomaines) =>
-        prevDomaines.map((domaine) =>
+      const response = await updateDomain(id, data);
+      setDomaines((prev) => 
+        prev.map(domaine => 
           domaine.id === id ? { ...domaine, ...response.data } : domaine
         )
       );
@@ -53,21 +50,22 @@ const useDomaines = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-
-  const deleteExistingDomaine = async (id) => {
+  // Mémoiser deleteExistingDomaine
+  const deleteExistingDomaine = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
-      await deleteDomaine(id);
-      setDomaines((prevDomaines) => prevDomaines.filter((domaine) => domaine.id !== id)); 
+      await deleteDomain(id);
+      setDomaines((prev) => prev.filter(domaine => domaine.id !== id));
     } catch (err) {
+      console.error('Erreur lors de la suppression :', err);
       setError(err.message || 'Erreur lors de la suppression du domaine');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     domaines,

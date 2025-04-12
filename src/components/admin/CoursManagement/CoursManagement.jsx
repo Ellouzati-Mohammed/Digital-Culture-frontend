@@ -42,22 +42,22 @@ function CoursManagement({ setShowNewCoursForm, CoursData, onSubmit }) {
     const newErrors = {};
     let isValid = true;
 
-    if (!formData.coursTitle.trim()) {
-      newErrors.coursTitle = "Le nom du cours est requis";
+    if (!formData.cours_title.trim()) {
+      newErrors.cours_title = "Le nom du cours est requis";
       isValid = false;
     }
 
-    if (!formData.coursSubtitle.trim()) {
-      newErrors.coursSubtitle = "La description est requise";
+    if (!formData.cours_description.trim()) {
+      newErrors.cours_description = "La description est requise";
       isValid = false;
     }
     
-    const duration = Number(formData.estimated_time_minutes);
+    const duration = Number(formData.duration);
     if (!duration) {
-      newErrors.estimated_time_minutes = "La durée estimée est requise";
+      newErrors.duration = "La durée estimée est requise";
       isValid = false;
     } else if (duration < 1) {
-      newErrors.estimated_time_minutes = "La durée doit être supérieure à 0";
+      newErrors.duration = "La durée doit être supérieure à 0";
       isValid = false;
     }
 
@@ -71,7 +71,7 @@ function CoursManagement({ setShowNewCoursForm, CoursData, onSubmit }) {
 
     onSubmit({
       ...formData,
-      estimated_time_minutes: Number(formData.estimated_time_minutes)
+      duration: Number(formData.duration)
     });
     //ici on ajout se qu'on veuut si
   };
@@ -93,19 +93,19 @@ function CoursManagement({ setShowNewCoursForm, CoursData, onSubmit }) {
         <NormalInput
           label='Nom du Cours'
           placeholder='Ex : Machine Learning'
-          name='coursTitle'
-          value={formData.coursTitle}
+          name='cours_title'
+          value={formData.cours_title}
           setValue={handleChange} // Changé de onChange à setValue
-          error={errors.coursTitle}
+          error={errors.cours_title}
         />
 
         <NormalInput
           label='Description du cours'
           placeholder='Ex : Cours complet sur le Machine Learning'
-          name='coursSubtitle'
-          value={formData.coursSubtitle}
+          name='cours_description'
+          value={formData.cours_description}
           setValue={handleChange} // Changé de onChange à setValue
-          error={errors.coursSubtitle}
+          error={errors.cours_description}
           multiline
           minRows={3}
         />
@@ -113,10 +113,10 @@ function CoursManagement({ setShowNewCoursForm, CoursData, onSubmit }) {
         <NormalInput
           label='Durée estimée (minutes)'
           placeholder='Ex : 120'
-          name='estimated_time_minutes'
-          value={formData.estimated_time_minutes}
+          name='duration'
+          value={formData.duration}
           setValue={handleChange} // Changé de onChange à setValue
-          error={errors.estimated_time_minutes}
+          error={errors.duration}
           type="number"
           inputProps={{ min: 1 }}
         />
