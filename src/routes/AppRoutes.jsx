@@ -14,7 +14,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<HomeScreen/>} />
       <Route path="/DomainsCours/:DomainId" element={<CoursDomain/>} />
-      <Route path="/DomainsCours/Activities/:ActivitiesId" element={<Activitie/>} />
+      <Route path="/DomainsCours/Activities/:CoursId" element={<Activitie/>} />
       <Route path="/Profile" element={<Profile/>} />
       <Route path="/SignUp" element={<SignUp/>} />
       <Route path="/SignIn" element={<SignIn/>} />

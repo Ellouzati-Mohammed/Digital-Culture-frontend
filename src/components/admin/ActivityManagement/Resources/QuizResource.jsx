@@ -7,36 +7,35 @@ const QuizResource = ({ data, errors, onChange, onOptionChange }) => {
       <NormalInput
         label="Quiz Question"
         placeholder="Ex : Quel est le rôle des cookies"
-        name="quizQuestion"
-        value={data.quizQuestion}
+        name="question"
+        value={data.question}
         setValue={onChange}
-        error={errors?.quizQuestion}
+        error={errors?.question}
       />
       
       <Box sx={{ border: 'solid 1px #CBD5E1', borderRadius: 2, p: 2 }}>
-        {data.quizOptions.map((option, index) => (
+        {data.answers.map((option, index) => (
           <NormalInput
-            key={`quiz-option-${index}`}
             label={`Réponse ${index + 1}`}
             placeholder="Ex : Une option de réponse"
             value={option}
             setValue={(e) => onOptionChange(e, index)}
-            error={errors?.quizOptions?.[index]}
+            error={errors?.answers?.[index]}
           />
         ))}
         
         <SelectInput
           label="Choisir la réponse correcte"
-          name="quizCorrectAnswer"
-          value={data.quizCorrectAnswer}
+          name="correct"
+          value={data.correct}
           setValue={onChange}
-          options={data.quizOptions
+          options={data.answers
             .filter(opt => opt.trim())
             .map((opt, index) => ({ 
               value: opt, 
               label: opt || `Option ${index + 1}` 
             }))}
-          error={errors?.quizCorrectAnswer}
+          error={errors?.correct}
         />
       </Box>
     </Box>

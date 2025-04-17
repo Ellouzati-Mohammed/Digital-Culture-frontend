@@ -10,23 +10,23 @@ const ResourceTypeSelector = ({ currentType, onTypeChange }) => {
       padding: 1,
       borderRadius: 1
     }}>
-      {Object.values(RESOURCE_TYPES).map(type => (
+      {Object.values(RESOURCE_TYPES).map(activity_type => (
         <Button
-          key={type}
-          variant={currentType === type ? 'contained' : 'text'}
-          onClick={() => onTypeChange(type)}
+          key={activity_type}
+          variant={currentType === activity_type ? 'contained' : 'text'}
+          onClick={() => onTypeChange(activity_type)}
           sx={{
             flexGrow: 1,
             textTransform: 'capitalize',
-            backgroundColor: currentType === type ? '#FFFFFF' : 'transparent',
+            backgroundColor: currentType === activity_type ? '#FFFFFF' : 'transparent',
             color: '#000000',
             boxShadow: 'none',
             '&:hover': {
-              backgroundColor: currentType === type ? '#F0F0F0' : '#E8E8E8'
+              backgroundColor: currentType === activity_type ? '#F0F0F0' : '#E8E8E8'
             }
           }}
         >
-          {type}
+          {activity_type}
         </Button>
       ))}
     </Box>

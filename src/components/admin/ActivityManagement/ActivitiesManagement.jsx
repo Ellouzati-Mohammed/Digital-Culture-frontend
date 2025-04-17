@@ -19,8 +19,8 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
   useEffect(() => {
     if (isEditMode && ActivitiesData) {
       setFormData({
-        type: ActivitiesData.type,
-        [ActivitiesData.type]: { ...ActivitiesData }
+        activity_type: ActivitiesData.activity_type,
+        [ActivitiesData.activity_type]: { ...ActivitiesData }
       });
     } else {
       // Réinitialisation quand on n'est plus en mode édition
@@ -28,53 +28,53 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
     }
   }, [ActivitiesData, isEditMode]);
 
-  const handleResourceChange = (type) => {
-    setFormData(prev => ({ ...prev, type }));
+  const handleResourceChange = (activity_type) => {
+    setFormData(prev => ({ ...prev, activity_type }));
     setErrors({});
   };
 
   const validateForm = () => {
-    const currentType = formData.type;
+    const currentType = formData.activity_type;
     const currentData = formData[currentType];
     const newErrors = {};
     let isValid = true;
 
     switch(currentType) {
       case RESOURCE_TYPES.VIDEO:
-        if (!currentData.videoUrl?.trim()) {
-          newErrors.videoUrl = "L'URL de la vidéo est requise";
+        if (!currentData.video_url?.trim()) {
+          newErrors.video_url = "L'URL de la vidéo est requise";
           isValid = false;
         }
         break;
 
       case RESOURCE_TYPES.PDF:
-        if (!currentData.pdfTitle?.trim()) {
-          newErrors.pdfTitle = "Le titre du PDF est requis";
+        if (!currentData.pdf_title?.trim()) {
+          newErrors.pdf_title = "Le titre du PDF est requis";
           isValid = false;
         }
-        if (!currentData.pdfUrl?.trim()) {
-          newErrors.pdfUrl = "L'URL du PDF est requise";
+        if (!currentData.pdf_url?.trim()) {
+          newErrors.pdf_url = "L'URL du PDF est requise";
           isValid = false;
         }
         break;
 
       case RESOURCE_TYPES.QUIZ:
-        if (!currentData.quizQuestion?.trim()) {
-          newErrors.quizQuestion = "La question est requise";
+        if (!currentData.question?.trim()) {
+          newErrors.question = "La question est requise";
           isValid = false;
         }
         
-        currentData.quizOptions.forEach((option, index) => {
+        currentData.answers.forEach((option, index) => {
           if (!option.trim()) {
             newErrors[`option${index}`] = `Option ${index + 1} requise`;
             isValid = false;
           }
         });
 
-        if (!currentData.quizCorrectAnswer?.trim()) {
+        if (!currentData.correct?.trim()) {
           newErrors.correctAnswer = "Réponse correcte requise";
           isValid = false;
-        } else if (!currentData.quizOptions.includes(currentData.quizCorrectAnswer)) {
+        } else if (!currentData.answers.includes(currentData.correct)) {
           newErrors.correctAnswer = "La réponse doit correspondre à une option";
           isValid = false;
         }
@@ -91,24 +91,42 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
-    onSubmit({ 
-      type: formData.type,
-      ...formData[formData.type]
-    });
-     setFormData({
+  
+    const activityType = formData.activity_type;
+    let submissionData = { activity_type: activityType };
+  
+    if (activityType === RESOURCE_TYPES.QUIZ) {
+      const quizData = formData.quiz;
+  
+      submissionData = {
+        ...submissionData,
+        question: quizData.question,
+        answers: quizData.answers.map((ans) => ({
+          reponse: ans,
+          correct: ans === quizData.correct
+        }))
+      };
+    } else {
+      submissionData = {
+        ...submissionData,
+        ...formData[activityType]
+      };
+    }
+  
+    onSubmit(submissionData);
+  
+    setFormData({
       ...INITIAL_ACTIVITIES_RESOURCE_STATE,
-      type: formData.type, 
+      activity_type: formData.activity_type, 
     });
-    //ici je vais ajouter un alerte qui informe l'admine si les donner sont bien ajouter au DB
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [prev.type]: {
-        ...prev[prev.type],
+      [prev.activity_type]: {
+        ...prev[prev.activity_type],
         [name]: value
       }
     }));
@@ -122,7 +140,7 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
       ...prev,
       quiz: {
         ...prev.quiz,
-        quizOptions: prev.quiz.quizOptions.map((opt, i) => 
+        answers: prev.quiz.answers.map((opt, i) => 
           i === index ? value : opt
         )
       }
@@ -139,7 +157,7 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
   };
 
   const renderResourceForm = () => {
-    switch(formData.type) {
+    switch(formData.activity_type) {
       case RESOURCE_TYPES.VIDEO:
         return <VideoResource data={formData.video} errors={errors} onChange={handleChange} />;
 
@@ -166,7 +184,7 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
         </Typography>
 
         {!isEditMode && <ResourceTypeSelector  //aficher le nav seulement si on veus ajouter l'un des resources
-          currentType={formData.type}
+          currentType={formData.activity_type}
           onTypeChange={handleResourceChange}
         />}
 

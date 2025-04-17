@@ -52,7 +52,7 @@ import CoursMangement from '../components/admin/CoursManagement/CoursManagement.
 import { role } from "../services/UserRole.js";
 import useDomaines from "../hooks/useDomains.js";
 import useCourses from "../hooks/useCourses.js";
-import { getDomainCourses } from "../services/DomainCoursesService.js";
+import { getDomainCourses } from "../services/CoursesService.js";
 
 
 const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Update, publiched_Date, nbr_Enroll }) => {
@@ -146,87 +146,28 @@ const Cours = ({ id, duration, cours_title, cours_description , setShowNewCoursF
     </Link>
   );
 };
-function AllCoursCard({ courses = [], loading,onDeleteRequest,onEdit}) {
+function AllCoursCard({deleteExistingCours,updateExistingCours,fetchCourses,courses,DomainId,loading}) {
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   const [selectedCours, setSelectedCours] = useState(null); // Pour modification
 
-
-  const handleModifyDomain = (formData) => {
-    onEdit(formData);
-  };
-
-
-
-  return (
-    <Box sx={AllCoursContainer}>
-       
-      <Box sx={AllCoursSecContainer}>
-        <Typography variant="h2" sx={HeaderTitle}>
-          Course Content
-        </Typography>
-
-        {loading ? (
-          <Typography>Chargement des cours...</Typography>
-        ) : courses.length === 0 ? (
-          <Typography>Aucun cours trouvé.</Typography>
-        ) : (
-          courses.map((cours) => (
-            <Cours
-              key={cours.id}
-              id={cours.id}
-              duration={cours.duration}
-              cours_title={cours.cours_title}
-              cours_description={cours.cours_description}
-              onEdit={setSelectedCours}
-              setShowNewCoursForm={setShowNewCoursForm}
-              onDelete={onDeleteRequest}
-            />
-          ))
-        )}
-      </Box>
-
-      {role === "admin" && showNewCoursForm && (
-        <CoursMangement 
-          setShowNewCoursForm={setShowNewCoursForm} 
-          onSubmit={handleModifyDomain}
-          CoursData={selectedCours}
-        />
-      )}
-    </Box>
-  );
-}
-export default function CoursDomain() {
- 
-  const [showNewCoursForm, setShowNewCoursForm] = useState(false);
-  const { DomainId } = useParams(); //pour recuuprer l'id depuis l'url
-  const {courses,loading,fetchCourses,createNewCours,deleteExistingCours,updateExistingCours } = useCourses();
   const [deleteConfirmation,setDeleteConfirmation] = useState({
     isOpen: false,
     CoursId: null,
     CoursTitle:''
   }); 
 
-  
+  const courseList = courses?.courses || [];
+
+
+ 
   useEffect(() => {
-      fetchCourses(DomainId);
-    }, [DomainId, fetchCourses]);
-
-
-  const handleAddCours = async (formData) => {
-    try {
-      formData.domain_id = DomainId;//ajouter le champs domain id qiu est dans lurl
-      await createNewCours(formData,DomainId); 
-      await fetchCourses();
-      setShowNewCoursForm(false);
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour du domaine : ", error);
-    }
-  };
+    fetchCourses(DomainId);
+  }, [DomainId, fetchCourses]);
 
   const handleModifyCours = async (formData) => {
     try {
       await updateExistingCours(formData.id,formData); 
-      await fetchCourses(DomainId);
+      fetchCourses(DomainId);
       setShowNewCoursForm(false);
     } catch (error) {
       console.error("Erreur lors de la mise à jour du domaine : ", error);
@@ -254,12 +195,11 @@ export default function CoursDomain() {
       const handleCancelDelete = useCallback(() => {
         setDeleteConfirmation({ isOpen: false, CoursId: null ,CoursTitle:''});
       }, []);
-  
+
 
   return (
-    <Container maxWidth="lg" disableGutters sx={CoursDomainContainer}>
-
-      <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
+    <Box sx={AllCoursContainer}>
+        <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
               <DialogTitle>Confirmer la suppression</DialogTitle>
               <DialogContent>
                 <DialogContentText>
@@ -277,7 +217,65 @@ export default function CoursDomain() {
                 </Button>
               </DialogActions>
       </Dialog>
+      <Box sx={AllCoursSecContainer}>
+        <Typography variant="h2" sx={HeaderTitle}>
+          Course Content
+        </Typography>
 
+       { loading ? (
+          <Typography>Chargement des cours...</Typography>
+        ) : courseList.length === 0 ? (
+          <Typography>Aucun cours trouvé.</Typography>
+        ) : (
+          courseList.map((cours) => (
+            <Cours
+              key={cours.id}
+              id={cours.id}
+              duration={cours.duration}
+              cours_title={cours.cours_title}
+              cours_description={cours.cours_description}
+              onEdit={setSelectedCours}
+              setShowNewCoursForm={setShowNewCoursForm}
+              onDelete={handleDeleteRequest}
+            />
+          ))
+        )}
+      </Box>
+
+      {role === "admin" && showNewCoursForm && (
+        <CoursMangement 
+          setShowNewCoursForm={setShowNewCoursForm} 
+          onSubmit={handleModifyCours}
+          CoursData={selectedCours}
+        />
+      )}
+    </Box>
+  );
+}
+export default function CoursDomain() {
+ 
+  const [showNewCoursForm, setShowNewCoursForm] = useState(false);
+  const { DomainId } = useParams(); //pour recuuprer l'id depuis l'url
+  const {courses,loading,fetchCourses,createNewCours,deleteExistingCours,updateExistingCours} = useCourses();
+
+
+
+  const handleAddCours = async (formData) => {
+    try {
+      formData.domain_id = DomainId;//ajouter le champs domain id qiu est dans lurl
+      await createNewCours(formData,DomainId); 
+      await fetchCourses(DomainId);
+      setShowNewCoursForm(false);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du domaine : ", error);
+    }
+  };
+
+ 
+  
+
+  return (
+    <Container maxWidth="lg" disableGutters sx={CoursDomainContainer}>
       <Box sx={CoursDomainSecContainer}>
         {role === 'admin' && <Box sx={headerManagementTitle}>
           <Typography variant="h3" sx={titleManagementtxt}>
@@ -306,7 +304,7 @@ export default function CoursDomain() {
           publiched_Date={courses.created_at}
           nbr_Enroll={1500}
         />
-       <AllCoursCard courses={courses.courses} loading={loading} DominId={DomainId} onDeleteRequest={handleDeleteRequest} onEdit={handleModifyCours} />
+       <AllCoursCard courses={courses} DomainId={DomainId} fetchCourses={fetchCourses} deleteExistingCours={deleteExistingCours} updateExistingCours={updateExistingCours}loading={loading} />
       </Box>
     </Container>
   );

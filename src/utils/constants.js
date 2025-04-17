@@ -5,13 +5,12 @@ export const RESOURCE_TYPES = {
   };
   
   export const INITIAL_ACTIVITIES_RESOURCE_STATE = {
-    type: RESOURCE_TYPES.VIDEO,
-    video: { videoUrl: '' },
-    pdf: { pdfTitle: '', pdfUrl: '' },
+    activity_type: RESOURCE_TYPES.VIDEO,
+    video: { video_url: '' },
+    pdf: { pdf_title: '', pdf_url: '' },
     quiz: { 
-      quizQuestion: '', 
-      quizOptions: Array(4).fill(''), 
-      quizCorrectAnswer: '' 
+      question: '', 
+      answers: Array(4).fill(''),  
     }
   };
 

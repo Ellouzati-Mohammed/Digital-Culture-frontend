@@ -28,6 +28,32 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import ActivityManagement from "../components/admin/ActivityManagement/ActivitiesManagement.jsx";
 import { role } from "../services/UserRole.js";
+import useActivities from "../hooks/useActivites.js";
+import { useParams } from "react-router-dom";
+
+
+const getEmbedUrl = (url) => {
+  try {
+    const urlObj = new URL(url);
+
+    // Cas normal avec ?v=xxxxx
+    const videoIdFromParams = urlObj.searchParams.get("v");
+    if (videoIdFromParams) {
+      return `https://www.youtube.com/embed/${videoIdFromParams}`;
+    }
+
+    // Cas des liens raccourcis https://youtu.be/xxxxx
+    if (urlObj.hostname === "youtu.be") {
+      const videoIdFromPath = urlObj.pathname.split("/")[1];
+      return `https://www.youtube.com/embed/${videoIdFromPath}`;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("URL invalide :", url);
+    return null;
+  }
+};
 
 
 
@@ -39,7 +65,7 @@ const Video = ({ videoId,videoUrl,setShowNewActivityForm,onType,handleDelete,han
       <iframe
         width="100%"
         height="100%"
-        src={videoUrl} // Le lien de la vidéo est dynamique maintenant
+        src={getEmbedUrl(videoUrl)} // Le lien de la vidéo est dynamique maintenant
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
@@ -82,7 +108,7 @@ const Quiz = ({ quizId,question, options, correctAnswer,setShowNewActivityForm,o
         {question}
       </Typography>
       
-      <FormControl component="fieldset" fullWidth sx={isSubmitted ? disabledStyleQuiz : {}}>
+      <FormControl component="fieldset" fullWidth>
         <RadioGroup value={selectedValue} onChange={handleChange}>
           {options.map((option) => (
             <Box key={option} sx={SelctedResponse(selectedValue, option, isSubmitted, correctAnswer)}>
@@ -140,23 +166,67 @@ function Activitie() {
 
   const [showNewActivityForm, setShowNewActivityForm] = useState(false); // État pour afficher le formulaire
   const [selectedResourceData, setselectedResourceData] = useState(null);
+  const { CoursId } = useParams(); //recupere le id du cours depuuuuit l'url
+  const {activities,loading,fetchActivities,createNewActivity,deleteExistingActivity,updateExistingActivity} = useActivities();
+  
 
-  const handleAddResource = (resourceData) => {
-    console.log("Données du formulaire à ajouter:", resourceData);
-    setShowNewActivityForm(false);
-    setselectedResourceData(null);//i
+   useEffect(() => {
+      fetchActivities(CoursId);
+    },[CoursId, fetchActivities]);
+    
+
+    function extractQuizData(answers) {
+      const data = {
+        answers: [],
+        correct: null
+      };
+    
+      for (const answer of answers) {
+        data.answers.push(answer.reponse);
+        if (answer.correct === 1) {
+          data.correct = answer.reponse;
+        }
+      }
+    
+      return data;
+    }
+
+  const handleAddResource = async (resourceData) => {
+    
+    try {
+      resourceData.course_id = CoursId;//ajouter le champs cours id qui est dans lurl
+      await createNewActivity(resourceData,CoursId); 
+      await fetchActivities(CoursId);
+      setShowNewActivityForm(false);
+      setselectedResourceData(null);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du cours : ", error);
+    }
+    
   };
 
-  const handleDelete = (e,type,id) => {
+  
+
+  const handleDelete = (e,activity_type,id) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('delet  : '+type+' id : '+id)
+    console.log('delet  : '+activity_type+' id : '+id)
   };
 
   const handleModify = (e,resourceData) => {
     setShowNewActivityForm(true);
     setselectedResourceData(resourceData);
-    console.log('add : ', resourceData);
+  };
+  const handleUpdateResource = async (formData) => {
+    try {
+      console.log(formData)
+      await updateExistingActivity(formData.id,formData);
+      await fetchActivities(CoursId);
+      setShowNewActivityForm(false);
+      setselectedResourceData(null);
+    } catch (error) {
+      console.error("Erreur lors de la modification de la ressource :", error);
+    }
   };
 
   const handleCancel = () => {
@@ -175,16 +245,14 @@ function Activitie() {
           Nouveau Ressource
         </Button>
       </Box>}
-      {role === "admin" && showNewActivityForm && (
-          <ActivityManagement setShowNewActivityForm={setShowNewActivityForm} onSubmit={handleAddResource} />
-      )}
+     
 
       <Box sx={cardBoxStyle}>
         <Typography variant="h2" sx={cardHeaderStyle}>
-          Introduction à JavaScript
+          {activities.cours_title}
         </Typography>
         <Typography variant="p" sx={cardBodyStyle}>
-          Introduction à JavaScript
+          {activities.cours_description}
         </Typography>
         <ButtonGroup variant="outlined" aria-label="navigation buttons" sx={buttonGroupStyle}>
           <Button sx={NavButton} startIcon={<ArrowBack />}>Previous</Button>
@@ -202,28 +270,40 @@ function Activitie() {
         </Box>
 
         {/* Intégration de la vidéo YouTube */}
-        <Video 
-          videoId={1} 
-          videoUrl="https://www.youtube.com/embed/4E90e13_-2A"
-          handleDelete={(e)=>handleDelete(e,'video',2)}
-          handleModify={(e) => handleModify(e, {
-            id: 1, // Ajouter un ID unique
-            type: 'video',
-            videoUrl: "https://www.youtube.com/embed/4E90e13_-2A"
-          })}
-        />
+        {activities?.activities?.videos.map((videoItem, index) =>
+          <Video 
+            videoId={videoItem.id} 
+            videoUrl={videoItem.video.video_url}
+            handleDelete={(e)=>handleDelete(e,'video',2)}
+            handleModify={(e) => handleModify(e, {
+              id: videoItem.id, // Ajouter un ID unique
+              activity_type: videoItem.activity_type,
+              video_url: videoItem.video.video_url
+            })}
+          />
+        )}
         <Box sx={resourceBoxHeaderStyle}>
           <PictureAsPdfOutlinedIcon sx={resourceIcon('#EF4444')} />
           <Typography fontSize={16} fontWeight={500}>
             PDF and Article
           </Typography>
         </Box>
-        
-        <Pdf pdfId={2} link='https://fad.umi.ac.ma/mod/resource/view.php?id=41659' handleDelete={(e)=>handleDelete(e,'pdf',2)} handleModify={(e) => handleModify(e, {
-            id: 5, // Ajouter un ID unique
-            type: 'pdf',
-            pdfUrl:'https://fad.umi.ac.ma/mod/resource/view.php?id=41659',
-          })}/>
+
+        {activities?.activities?.pdfs.map((pdfItem, index) => 
+            <Pdf
+              key={pdfItem.id}
+              pdfId={pdfItem.id}
+              link={pdfItem.pdf.pdf_url}
+              handleDelete={(e) => handleDelete(e, 'pdf', pdfItem.id)}
+              handleModify={(e) =>
+                handleModify(e, {
+                  id: pdfItem.id,
+                  activity_type: pdfItem.activity_type,
+                  pdf_url: pdfItem.pdf.pdf_url,
+                })
+              }
+            />
+          )}
 
         <Box sx={resourceBoxHeaderStyle}>
           <HelpOutlineIcon sx={resourceIcon('#22C55E')} />
@@ -231,26 +311,26 @@ function Activitie() {
             Quiz
           </Typography>
         </Box>
-        <Quiz quizId={4} question="Which of the following is NOT a JavaScript data type?" options={["string", "boolean", "float", "object"]} correctAnswer="float" handleDelete={(e)=>handleDelete(e,'quiz',5)} 
-          handleModify={(e) => handleModify(e ,{
-            id: 4,
-            type: 'quiz',
-            quizQuestion:'"Which of the following is NOT a JavaScript data type?',
-            quizOptions:["string", "boolean", "float", "object"],
-            quizCorrectAnswer : 'float'
+
+        {activities?.activities?.quizzes.map((quizItem, index) => {
+
+          const { answers, correct } = extractQuizData(quizItem.quiz.answers);
+          return  <Quiz quizId={quizItem.id} question={quizItem.quiz.question} options={answers} correctAnswer={correct} handleDelete={(e)=>handleDelete(e,'quiz',5)} 
+            handleModify={(e) =>  handleModify(e ,{
+              id: 2,
+              tet:'test',
+              activity_type: quizItem.activity_type,
+              question : quizItem.quiz.question,
+              answers:answers,
+              correct : correct
           })} />
-        <Quiz quizId={6} question="What is the result of 2 + '2' in JavaScript?" options={["22", "4", "undefined", "NaN"]} correctAnswer="22" handleDelete={(e)=>handleDelete(e,'quiz',5)} 
-          handleModify={(e) => handleModify(e,{
-            id: 4,
-            type: 'quiz',
-            quizQuestion:'"Which of the following is NOT a JavaScript data type?',
-            quizOptions:["string", "boolean", "float", "object"],
-            quizCorrectAnswer : 'float'
-          })} />
+          }
+        )}
+       
         {role === 'admin' && showNewActivityForm && (
           <ActivityManagement 
             setShowNewActivityForm={setShowNewActivityForm} 
-            onSubmit={selectedResourceData ? handleModify : handleAddResource}
+            onSubmit={selectedResourceData ? handleUpdateResource : handleAddResource}
             ActivitiesData={selectedResourceData}
             onCancel={handleCancel}
           />

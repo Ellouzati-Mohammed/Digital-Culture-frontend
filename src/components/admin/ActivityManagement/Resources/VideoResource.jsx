@@ -5,10 +5,10 @@ const VideoResource = ({ data, errors, onChange }) => {
     <NormalInput
       label="Url video"
       placeholder="Ex : Machine Learning"
-      name="videoUrl"
-      value={data.videoUrl}
+      name="video_url"
+      value={data.video_url}
       setValue={onChange}
-      error={errors?.videoUrl}
+      error={errors?.video_url}
     />
   );
 };

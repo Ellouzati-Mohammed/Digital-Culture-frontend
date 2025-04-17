@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'; // Ajouter useCallback
-import { getDomainCourses, createDomainCourse, updateDomainCourse, deleteDomainCourse } from '../services/DomainCoursesService';
+import { getDomainCourses, createDomainCourse, updateDomainCourse, deleteDomainCourse } from '../services/CoursesService';
 
 const useCourses = () => {
   const [courses, setCours] = useState([]);
@@ -14,7 +14,6 @@ const useCourses = () => {
       const response = await getDomainCourses(domainId);
       setCours(response.data);
     } catch (err) {
-      
       setError(err.message || 'Erreur lors de la récupération des courses');
     } finally {
       setLoading(false);
@@ -26,12 +25,12 @@ const useCourses = () => {
     setError(null);
     try {
       const response = await createDomainCourse(data);
-  
       setCours((prev) => ({
-        ...prev, 
-        courses: [...prev.courses, response.data] // Met à jour uniquement le tableau de cours
+        ...prev,
+        courses: [...(prev.courses || []), response.data]
       }));
     } catch (err) {
+      console.error("Erreur serveur lors de la création du cours :", err);
       setError(err.message || 'Erreur lors de la création du cours');
     } finally {
       setLoading(false);
@@ -45,7 +44,7 @@ const useCourses = () => {
     setError(null);
     try {
       const response = await updateDomainCourse(id, data);
-      
+     
       setCours((prev) => ({
         ...prev, 
         courses: prev.courses.map(course => 
