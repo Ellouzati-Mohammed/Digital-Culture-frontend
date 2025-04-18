@@ -12,8 +12,6 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
   const [formData, setFormData] = useState(INITIAL_ACTIVITIES_RESOURCE_STATE);
   const [errors, setErrors] = useState({});
   
-
-  
   const isEditMode = !!ActivitiesData;
 
   useEffect(() => {
@@ -22,6 +20,7 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
         activity_type: ActivitiesData.activity_type,
         [ActivitiesData.activity_type]: { ...ActivitiesData }
       });
+      
     } else {
       // Réinitialisation quand on n'est plus en mode édition
       setFormData(INITIAL_ACTIVITIES_RESOURCE_STATE);
@@ -98,9 +97,10 @@ function ActivityManagement({ setShowNewActivityForm, ActivitiesData, onSubmit,o
     if (activityType === RESOURCE_TYPES.QUIZ) {
       const quizData = formData.quiz;
   
-      submissionData = {
+      submissionData = {  //changer le format des donner pour la modification backend du quiz
         ...submissionData,
         question: quizData.question,
+        id:quizData.id,// trs important a ajouter
         answers: quizData.answers.map((ans) => ({
           reponse: ans,
           correct: ans === quizData.correct

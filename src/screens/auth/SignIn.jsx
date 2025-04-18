@@ -15,6 +15,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
 
 import {EmailInput,PasswordInput} from '../../components/ValidationInputs'
+import { API_ENDPOINTS } from "../../api/api";
 
 
 const SignInForm = () => {
@@ -34,13 +35,32 @@ const SignInForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const isValid = validateForm();
 
     if (isValid) {
-      console.log("Formulaire valide, soumission...");
-      // Ici, on peut ajouter l'appel API pour soumettre le formulaire
+      try {
+        const response = await fetch(API_ENDPOINTS.login, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Spécifie qu'on envoie du JSON
+          },
+          body: JSON.stringify(formData), // Utilisation directe de formData
+        });
+  
+        const data = await response.json();
+  
+        if (!response.ok) {
+          console.error("Erreur de connexion :", data);
+          // Optionnel : afficher message d'erreur à l'utilisateur
+        } else {
+          console.log("Connecté avec succès :", data);
+          // Optionnel : gérer le succès (stockage du token, redirection, etc.)
+        }
+      } catch (error) {
+        console.error("Erreur réseau :", error);
+      }
     }
   };
 

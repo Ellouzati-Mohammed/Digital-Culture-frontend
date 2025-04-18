@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 
-import { Container,Card,CardMedia,Box, CardContent, ButtonGroup,Button,Link } from "@mui/material";
+import { Container,Card,CardMedia,Box, CardContent, ButtonGroup,Button,Link,Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import { ArrowForward, ArrowBack } from "@mui/icons-material";
@@ -85,7 +85,7 @@ const Video = ({ videoId,videoUrl,setShowNewActivityForm,onType,handleDelete,han
   );
 };
 
-const Quiz = ({ quizId,question, options, correctAnswer,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit }) => {
+const Quiz = ({ quizId,question, options,quiznumber, correctAnswer,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit }) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -103,15 +103,15 @@ const Quiz = ({ quizId,question, options, correctAnswer,setShowNewActivityForm,o
     <Box sx={quizBoxStyle} component="form" onSubmit={handleSubmit}>
       <Typography variant="h6" sx={QuizQuestion} gutterBottom>
         <Box sx={questionBoxStyle}>
-          1
+          {quiznumber}
         </Box>
         {question}
       </Typography>
       
       <FormControl component="fieldset" fullWidth>
         <RadioGroup value={selectedValue} onChange={handleChange}>
-          {options.map((option) => (
-            <Box key={option} sx={SelctedResponse(selectedValue, option, isSubmitted, correctAnswer)}>
+          {options.map((option,index) => (
+            <Box key={`${quizId}-option-${index}`} sx={SelctedResponse(selectedValue, option, isSubmitted, correctAnswer)}>
               <FormControlLabel
                 value={option}
                 control={<Radio />}
@@ -168,7 +168,13 @@ function Activitie() {
   const [selectedResourceData, setselectedResourceData] = useState(null);
   const { CoursId } = useParams(); //recupere le id du cours depuuuuit l'url
   const {activities,loading,fetchActivities,createNewActivity,deleteExistingActivity,updateExistingActivity} = useActivities();
-  
+   const [deleteConfirmation,setDeleteConfirmation] = useState({
+      isOpen: false,
+      ActivityId: null,
+      ActivityType:''
+    }); 
+
+
 
    useEffect(() => {
       fetchActivities(CoursId);
@@ -211,7 +217,35 @@ function Activitie() {
     e.preventDefault();
     e.stopPropagation();
     console.log('delet  : '+activity_type+' id : '+id)
-  };
+    setDeleteConfirmation({
+      isOpen: true,
+      ActivityId : id,
+      ActivityType : activity_type
+    });
+     
+   };
+
+
+  const handleConfirmDelete = useCallback(async () => {
+          if (deleteConfirmation.ActivityId) {
+            try {
+              await deleteExistingActivity(deleteConfirmation.ActivityId);
+              await fetchActivities(CoursId);
+            } finally {
+              setDeleteConfirmation({ isOpen: false, ActivityId: null,ActivityType:'' });
+            }
+          }
+        }, [deleteConfirmation]);
+
+    const handleCancelDelete = useCallback(() => {
+            setDeleteConfirmation({ isOpen: false, ActivityId: null ,ActivityType:''});
+      }, []);
+
+    const handleCancel = () => {
+      setShowNewActivityForm(false);
+      setselectedResourceData(null); // Réinitialiser les données de la ressource modifiée
+    };
+
 
   const handleModify = (e,resourceData) => {
     setShowNewActivityForm(true);
@@ -229,14 +263,31 @@ function Activitie() {
     }
   };
 
-  const handleCancel = () => {
-    setShowNewActivityForm(false);
-    setselectedResourceData(null); // Réinitialiser les données de la ressource modifiée
-  };
+ 
   
 
   return (
     <Container disableGutters={true} sx={activitieContainerStyle}>
+
+      <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
+                    <DialogTitle>Confirmer la suppression</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Êtes-vous sûr de vouloir supprimer le domaine "{deleteConfirmation.CoursTitle}" ?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCancelDelete}>Annuler</Button>
+                      <Button 
+                        onClick={handleConfirmDelete} 
+                        color="error"
+                        disabled={loading}
+                      >
+                        Confirmer
+                      </Button>
+                    </DialogActions>
+      </Dialog>
+
       {role === 'admin' && <Box sx={headerManagementTitle}>
         <Typography variant="h3" sx={titleManagementtxt}>
           Gestion des Ressources
@@ -272,9 +323,10 @@ function Activitie() {
         {/* Intégration de la vidéo YouTube */}
         {activities?.activities?.videos.map((videoItem, index) =>
           <Video 
+          key={`video-${videoItem.id}`}
             videoId={videoItem.id} 
             videoUrl={videoItem.video.video_url}
-            handleDelete={(e)=>handleDelete(e,'video',2)}
+            handleDelete={(e)=>handleDelete(e,'video',videoItem.id)}
             handleModify={(e) => handleModify(e, {
               id: videoItem.id, // Ajouter un ID unique
               activity_type: videoItem.activity_type,
@@ -291,7 +343,7 @@ function Activitie() {
 
         {activities?.activities?.pdfs.map((pdfItem, index) => 
             <Pdf
-              key={pdfItem.id}
+            key={`pdf-${pdfItem.id}`} 
               pdfId={pdfItem.id}
               link={pdfItem.pdf.pdf_url}
               handleDelete={(e) => handleDelete(e, 'pdf', pdfItem.id)}
@@ -315,14 +367,14 @@ function Activitie() {
         {activities?.activities?.quizzes.map((quizItem, index) => {
 
           const { answers, correct } = extractQuizData(quizItem.quiz.answers);
-          return  <Quiz quizId={quizItem.id} question={quizItem.quiz.question} options={answers} correctAnswer={correct} handleDelete={(e)=>handleDelete(e,'quiz',5)} 
+          return  <Quiz key={`quiz-${quizItem.id}`} quizId={quizItem.id} quiznumber={index} question={quizItem.quiz.question} options={answers} correctAnswer={correct} handleDelete={(e)=>handleDelete(e,'quiz',quizItem.id) } 
             handleModify={(e) =>  handleModify(e ,{
-              id: 2,
-              tet:'test',
+              id: quizItem.id,
               activity_type: quizItem.activity_type,
               question : quizItem.quiz.question,
               answers:answers,
-              correct : correct
+              correct : correct,
+
           })} />
           }
         )}

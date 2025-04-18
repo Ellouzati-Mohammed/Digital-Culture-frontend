@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Container,Card,CardMedia,Box, CardContent, ButtonGroup,Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
-import { ArrowForward, ArrowBack } from "@mui/icons-material";
+import { ArrowForward, ArrowBack, Login } from "@mui/icons-material";
 import { CloudDownload } from "@mui/icons-material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Radio, RadioGroup, FormControlLabel, FormControl } from "@mui/material";
@@ -17,6 +17,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
 import  {EmailInput,NormalInput,PasswordInput} from "../../components/ValidationInputs";
+import { API_ENDPOINTS } from "../../api/api";
 
 const SignUpForm=()=>{
       const [formData, setFormData] = useState({password:"",email:"",fullname:""});
@@ -37,13 +38,12 @@ const SignUpForm=()=>{
         return Object.keys(newErrors).length === 0;
       };
     
-      const handleSubmit = (event) => {
+      const handleSubmit = async (event) => {
         event.preventDefault();
         const isValid = validateForm();
     
         if (isValid) {
-          console.log("Formulaire valide, soumission...");
-          // Ici, on peut ajouter l'appel API pour soumettre le formulaire
+          
         }
       };
     return(
@@ -53,12 +53,13 @@ const SignUpForm=()=>{
      
              <NormalInput label='Full Name' placeholder='Your Full Name' 
                 value={formData.fullname} 
-                setValue={(newFullName) => 
-                  setFormData(prev => ({ ...prev, fullname: newFullName }))
-                  } 
+                name="fullname"
+                setValue={(e) => 
+                  setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+                }
                 error={errors.fullname} 
                 icon={<PersonOutlinedIcon sx={inputIcon}/>}
-                />
+              />
              <EmailInput email={formData.email} 
                 setEmail={(newEmail) => 
                 setFormData(prev => ({ ...prev, email: newEmail }))

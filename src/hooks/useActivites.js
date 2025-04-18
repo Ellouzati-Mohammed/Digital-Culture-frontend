@@ -61,11 +61,17 @@ const useActivities = () => {
     setError(null);
     try {
       await deleteActivity(id);
-      setActivities(prev => ({
-        ...prev,
-        courses: prev.courses.filter(course => course.id !== id)
-      }));
+      
     } catch (err) {
+      if (err.response) {
+        // La réponse a été reçue mais le serveur a renvoyé une erreur
+        console.error("Erreur serveur :", {
+          status: err.response.status,
+          data: err.response.data,
+          message: err.response.data.message,
+        });
+        setError(err.response.data.message || 'Erreur serveur inconnue');
+      }
       setError(err.message || 'Erreur lors de la suppression du cours');
     } finally {
       setLoading(false);

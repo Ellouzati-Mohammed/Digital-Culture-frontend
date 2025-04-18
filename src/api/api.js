@@ -5,6 +5,6 @@ export const API_ENDPOINTS = {
   domaines: `${BASE_URL}/domains`,
   courses: `${BASE_URL}/courses`,
   activities: `${BASE_URL}/activities`,
-  // ajoute d'autres endpoints ici 
+  login : `${BASE_URL}/login`
 };
 
