@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "../api/api";
+import axiosInstance from "../api/axiosInstance";
 
 
 const domain = [
@@ -28,13 +29,12 @@ const domain = [
   };
 
 
-    
-const DOMAINES_URL = API_ENDPOINTS.domaines;
+  const DOMAINES_URL = API_ENDPOINTS.domaines;
 
-const getDomains = () => axios.get(DOMAINES_URL);
-const createDomain = (data) => axios.post(DOMAINES_URL, data);
-const updateDomain = (id, data) => axios.put(`${DOMAINES_URL}/${id}`, data);
-const deleteDomain = async (id) => {axios.delete(`${DOMAINES_URL}/${id}`)};
+  const getDomains = () => axiosInstance.get(DOMAINES_URL);
+  const createDomain = (data) => axiosInstance.post(DOMAINES_URL, data);
+  const updateDomain = (id, data) => axiosInstance.put(`${DOMAINES_URL}/${id}`, data);
+  const deleteDomain = (id) => axiosInstance.delete(`${DOMAINES_URL}/${id}`)
 
 
-export { domain,  selectedDomain,getDomains,createDomain,updateDomain,deleteDomain };
+export { domain, selectedDomain,getDomains,createDomain,updateDomain,deleteDomain };

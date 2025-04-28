@@ -10,19 +10,23 @@ import { TextField, InputAdornment } from "@mui/material";
 import { Email } from "@mui/icons-material";
 import { Lock } from "@mui/icons-material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
 
 import {EmailInput,PasswordInput} from '../../components/ValidationInputs'
 import { API_ENDPOINTS } from "../../api/api";
+import { useAuth } from "../../hooks/useAuth";
 
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({password:"",email:""});
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const validateForm = () => {
+    
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -53,10 +57,15 @@ const SignInForm = () => {
   
         if (!response.ok) {
           console.error("Erreur de connexion :", data);
-          // Optionnel : afficher message d'erreur à l'utilisateur
+          setErrors(prev => ({
+            ...prev,
+            email: "Incorrect email or password.",
+            password: "Incorrect email or password."
+          }));
         } else {
           console.log("Connecté avec succès :", data);
-          // Optionnel : gérer le succès (stockage du token, redirection, etc.)
+          login(data);
+          navigate("/"); // s'il est connecté avec succès
         }
       } catch (error) {
         console.error("Erreur réseau :", error);
@@ -88,7 +97,7 @@ const SignInForm = () => {
         <Typography variant="span" fontSize="1rem">
           Don't have an account yet?
         </Typography>
-        <Link to={'/'} style={linkStyle}>Sign Up</Link>
+        <Link to={'/SignUp'} style={linkStyle}>Sign Up</Link>
       </Box>
     </Box>
   );

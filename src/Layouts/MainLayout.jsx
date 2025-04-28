@@ -17,7 +17,6 @@ const MainLayout = ({ children }) => {
       </header>}
       <main style={AppMain}>
       {!hideLayout && role !== 'admin' && <Sidebar />}
-
         {children}
       </main>
     </div>

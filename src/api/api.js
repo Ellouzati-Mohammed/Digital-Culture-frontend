@@ -5,6 +5,8 @@ export const API_ENDPOINTS = {
   domaines: `${BASE_URL}/domains`,
   courses: `${BASE_URL}/courses`,
   activities: `${BASE_URL}/activities`,
-  login : `${BASE_URL}/login`
+  login : `${BASE_URL}/login`,
+  SignUp :`${BASE_URL}/register`
+  
 };
 

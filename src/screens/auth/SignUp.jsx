@@ -11,17 +11,20 @@ import { TextField, InputAdornment } from "@mui/material";
 import { Email } from "@mui/icons-material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { Lock } from "@mui/icons-material";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
 import  {EmailInput,NormalInput,PasswordInput} from "../../components/ValidationInputs";
 import { API_ENDPOINTS } from "../../api/api";
+import { useAuth } from "../../hooks/useAuth";
 
 const SignUpForm=()=>{
-      const [formData, setFormData] = useState({password:"",email:"",fullname:""});
-      const [errors, setErrors] = useState({ email: "", password: "",fullname :"" });
+      const [formData, setFormData] = useState({password:"",email:"",Full_Name:""});
+      const [errors, setErrors] = useState({ email: "", password: "",Full_Name :"" });
+      const { login } = useAuth();
+      const navigate = useNavigate();
     
       const validateForm = () => {
         const newErrors = {};
@@ -32,7 +35,7 @@ const SignUpForm=()=>{
     
         if (!formData.password) newErrors.password = "Le mot de passe est requis";
 
-        if (!formData.fullname) newErrors.fullname = "Le fullname est requis";
+        if (!formData.Full_Name) newErrors.Full_Name = "Le Full_Name est requis";
     
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -43,7 +46,25 @@ const SignUpForm=()=>{
         const isValid = validateForm();
     
         if (isValid) {
-          
+           try {
+                  const response = await fetch(API_ENDPOINTS.SignUp, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json", // Spécifie qu'on envoie du JSON
+                    },
+                    body: JSON.stringify(formData), // Utilisation directe de formData
+                  });
+            
+                  const data = await response.json();
+            
+                  if (response.ok){
+                    console.log("Connecté avec succès :", data);
+                    login(data);
+                    navigate("/"); // s'il est connecté avec succès
+                  }
+                } catch (error) {
+                  console.error("Erreur réseau :", error);
+                }
         }
       };
     return(
@@ -52,12 +73,12 @@ const SignUpForm=()=>{
           <Typography variant="span" sx={subtitleStyle}>Sign up to start learning</Typography>
      
              <NormalInput label='Full Name' placeholder='Your Full Name' 
-                value={formData.fullname} 
-                name="fullname"
+                value={formData.Full_Name} 
+                name="Full_Name"
                 setValue={(e) => 
                   setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
                 }
-                error={errors.fullname} 
+                error={errors.Full_Name} 
                 icon={<PersonOutlinedIcon sx={inputIcon}/>}
               />
              <EmailInput email={formData.email} 
@@ -79,7 +100,7 @@ const SignUpForm=()=>{
                 <Typography variant="span" fontSize='1rem'>
                   Already have an account?
                 </Typography>
-                <Link to={'/'} style={linkStyle}>Sign In</Link>
+                <Link to={'/SignIn'} style={linkStyle}>Sign In</Link>
              </Box>
          
         </Box>

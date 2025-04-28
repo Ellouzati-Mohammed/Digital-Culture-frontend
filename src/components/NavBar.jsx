@@ -24,13 +24,16 @@ import {
   LogOutIcon,
   BoxLogo
 } from '../styles/NavBarStyle'
+import { useAuth } from "../hooks/useAuth";
+
 
 const Navbar = () => {
-  const [userName] = useState("Mohammed Ellouzati"); // Simulating logged-in user
+
+  const {Full_Name, email, role, token, loading ,logout } = useAuth();
   const [avatarUrl] = useState("https://via.placeholder.com/150");
 
   const handleLogout = () => {
-    
+    logout();
   };
 
   return (
@@ -75,7 +78,7 @@ const Navbar = () => {
                 aria-label="user avatar"
               />
               <Typography variant="body1" sx={FullName}>
-                {userName}
+                {Full_Name}
               </Typography>
             </Box>
           </Link>
