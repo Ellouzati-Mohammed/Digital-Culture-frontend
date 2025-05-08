@@ -6,12 +6,13 @@ import React, { lazy, useEffect, useMemo, useState } from "react";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import DomainMangement from "../components/admin/DomainManagement/DomainManagement";
-import { role } from "../services/UserRole";
+import { useAuth } from '../hooks/useAuth';
 import useDomaines from "../hooks/useDomains";
 
 
 function HomeScreen(){
 
+  const { role } = useAuth();
   const [showNewDomainForm, setShowNewDomainForm] = useState(false); // État pour afficher le formulaire
   const { domaines, loading, fetchDomaines,updateExistingDomaine,createNewDomaine,deleteExistingDomaine } = useDomaines();
 
@@ -25,7 +26,7 @@ function HomeScreen(){
       console.error("Erreur lors de la mise à jour du domaine : ", error);
     }
   };
-
+console.log(role)
     return (
         <Box sx={HomeBox}>
             {!(role.toLowerCase()==='admin') && <Box sx={WelcomCardMotivation}>

@@ -4,10 +4,11 @@ import {AppMain,AppContainer} from '../styles/AppStyle.js'
 import Navbar from "../components/NavBar.jsx";
 import Sidebar from "../components/SideBar.jsx";
 import { useLocation } from "react-router-dom";
-import { role } from "../services/UserRole.js";
+import { useAuth } from '../hooks/useAuth';
 
 const MainLayout = ({ children }) => {
     const location = useLocation();
+    const { role } = useAuth();
 
     const hideLayout = ["/signup", "/signin"].includes(location.pathname.toLowerCase());
   return (

@@ -20,7 +20,7 @@ import {
 import { adminDeleteButton, adminButtonContainer, adminModifyButton } from "../styles/ManagementStyle.js";
 import DomainManagement from "./admin/DomainManagement/DomainManagement.jsx";
 import useDomaines from "../hooks/useDomains.js";
-import { role } from "../services/UserRole.js";
+import { useAuth } from '../hooks/useAuth';
 
 
 
@@ -37,7 +37,7 @@ const DomainCard = React.memo(
     onDelete
   }) => {
     const [courseCount] = useState(40); 
-    
+    const { role } = useAuth();
 
     const handleDelete = useCallback((e) => {
       e.preventDefault();
