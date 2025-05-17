@@ -305,10 +305,7 @@ function Activitie() {
         <Typography variant="p" sx={cardBodyStyle}>
           {activities.cours_description}
         </Typography>
-        <ButtonGroup variant="outlined" aria-label="navigation buttons" sx={buttonGroupStyle}>
-          <Button sx={NavButton} startIcon={<ArrowBack />}>Previous</Button>
-          <Button sx={NavButton} endIcon={<ArrowForward />}>Next</Button>
-        </ButtonGroup>
+       
       </Box>
 
       {/* Titre "Video Lecture" */}

@@ -5,6 +5,7 @@ import Navbar from "../components/NavBar.jsx";
 import Sidebar from "../components/SideBar.jsx";
 import { useLocation } from "react-router-dom";
 import { useAuth } from '../hooks/useAuth';
+import ChatBotWidget from "../components/ChatBotWidget.jsx";
 
 const MainLayout = ({ children }) => {
     const location = useLocation();
@@ -18,6 +19,8 @@ const MainLayout = ({ children }) => {
       </header>}
       <main style={AppMain}>
       {!hideLayout && role !== 'admin' && <Sidebar />}
+      {!hideLayout &&<ChatBotWidget /> }
+      
         {children}
       </main>
     </div>

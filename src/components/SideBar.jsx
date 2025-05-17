@@ -7,18 +7,19 @@ import {
   ListItemText,
   Typography,
   Collapse,
-  Divider
+  Divider,
+  CircularProgress
 } from "@mui/material";
 import {
   Dashboard,
-  EmojiEvents,
   Category,
   ExpandMore,
   ChevronRight,
   Settings,
   HelpOutline
 } from "@mui/icons-material";
-import { domain } from "../services/DomainService.js";
+import { Link } from "react-router-dom";
+import  useDomaines  from "../hooks/useDomains.js";
 import { 
   listItemStyle, 
   iconStyle, 
@@ -34,19 +35,18 @@ import {
   listItemTextStyle, 
   DividerStyle 
 } from '../styles/SideBar.js';
-import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const [openDomain, setOpenDomain] = useState(false);
-  
-  // Toggle domain list visibility
+  const { domaines, loading } = useDomaines();
+
   const handleDomainToggle = () => {
     setOpenDomain((prevState) => !prevState);
   };
 
   return (
     <Box sx={SideBarContainer}>
-      <Box sx={SideBarTitle}>
+      <Box sx={SideBarBoxTitle}>
         <Typography variant="h6" sx={SideBarTitle}>
           Digital Culture for All
         </Typography>
@@ -54,38 +54,52 @@ const Sidebar = () => {
 
       <List disablePadding>
         <Link to="/" style={{ textDecoration: "none" }}>
-          <ListItem button sx={listItemStyle} aria-label="Go to domains page">
+          <ListItem button sx={listItemStyle}>
             <ListItemIcon sx={IconSideStyle}>
               <Dashboard sx={iconStyle} />
             </ListItemIcon>
-            <ListItemText primary="Domains Page" primaryTypographyProps={primaryTextStyle} />
+            <ListItemText 
+              primary="Page des domaines" 
+              primaryTypographyProps={primaryTextStyle} 
+            />
           </ListItem>
         </Link>
 
-        <ListItem button onClick={handleDomainToggle} sx={listItemStyle} aria-expanded={openDomain}>
+        <ListItem 
+          button 
+          onClick={handleDomainToggle} 
+          sx={listItemStyle}
+          disabled={loading}
+        >
           <ListItemIcon sx={IconSideStyle}>
             <Category sx={iconStyle} />
           </ListItemIcon>
-          <ListItemText primary="List of Domains" primaryTypographyProps={primaryTextStyle} />
-          {openDomain ? 
-            <ExpandMore sx={FetchIcon} /> : 
-            <ChevronRight sx={FetchIcon} />}
+          <ListItemText 
+            primary="Liste des domaines" 
+            primaryTypographyProps={primaryTextStyle} 
+          />
+          {loading ? (
+            <CircularProgress size={20} sx={FetchIcon} />
+          ) : openDomain ? (
+            <ExpandMore sx={FetchIcon} />
+          ) : (
+            <ChevronRight sx={FetchIcon} />
+          )}
         </ListItem>
 
         <Collapse in={openDomain} timeout="auto" unmountOnExit>
           <List disablePadding sx={DomainList}>
-            {domain.map((domainItem) => (
-              <ListItem 
-                key={domainItem.id} 
-                button 
+            {domaines.map((domainItem) => (
+              <ListItem
+                key={domainItem.id}
+                button
                 sx={ListItemMap}
                 component={Link}
-                to={`/DomainsCours/${domainItem.id}`} 
-                aria-label={`Go to ${domainItem.title} courses`}
+                to={`/DomainsCours/${domainItem.id}`}
               >
-                <ListItemText 
-                  primary={domainItem.title} 
-                  {...listItemTextStyle} 
+                <ListItemText
+                  primary={domainItem.title}
+                  sx={listItemTextStyle}
                 />
               </ListItem>
             ))}
@@ -96,18 +110,24 @@ const Sidebar = () => {
       <Divider sx={DividerStyle} />
 
       <List disablePadding>
-        <ListItem button sx={listItemStyle} aria-label="Go to settings">
+        <ListItem button sx={listItemStyle}>
           <ListItemIcon sx={IconSideStyle}>
             <Settings sx={iconStyle} />
           </ListItemIcon>
-          <ListItemText primary="Settings" primaryTypographyProps={primaryTextStyle} />
+          <ListItemText 
+            primary="Paramètres" 
+            primaryTypographyProps={primaryTextStyle} 
+          />
         </ListItem>
 
-        <ListItem button sx={listItemStyle} aria-label="Go to help">
+        <ListItem button sx={listItemStyle}>
           <ListItemIcon sx={IconSideStyle}>
             <HelpOutline sx={iconStyle} />
           </ListItemIcon>
-          <ListItemText primary="Help" primaryTypographyProps={primaryTextStyle} />
+          <ListItemText 
+            primary="Aide" 
+            primaryTypographyProps={primaryTextStyle} 
+          />
         </ListItem>
       </List>
     </Box>
