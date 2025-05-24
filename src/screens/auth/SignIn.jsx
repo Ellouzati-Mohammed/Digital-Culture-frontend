@@ -13,13 +13,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Link, useNavigate } from 'react-router-dom';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitButtonStyle, linkStyle,inputLabel,inputIcon,inputStyle,MotivationLabel,AuthContainer} from "../../styles/AuthStyle"
-
+import CircularProgress from '@mui/material/CircularProgress';
 import {EmailInput,PasswordInput} from '../../components/ValidationInputs'
 import { API_ENDPOINTS } from "../../api/api";
 import { useAuth } from "../../hooks/useAuth";
 
 
 const SignInForm = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({password:"",email:""});
   const [errors, setErrors] = useState({ email: "", password: "" });
   const { login } = useAuth();
@@ -44,6 +45,7 @@ const SignInForm = () => {
     const isValid = validateForm();
 
     if (isValid) {
+      setLoading(true);
       try {
         const response = await fetch(API_ENDPOINTS.login, {
           method: "POST",
@@ -69,7 +71,13 @@ const SignInForm = () => {
         }
       } catch (error) {
         console.error("Erreur réseau :", error);
+        setErrors(prev => ({
+          ...prev,
+          email: "Impossible de se connecter au serveur.",
+          password: "Impossible de se connecter au serveur."
+        }));
       }
+      setLoading(false);
     }
   };
 
@@ -91,7 +99,7 @@ const SignInForm = () => {
           setFormData(prev => ({ ...prev, password: newPassword }))
         } error={errors.password} />
 
-      <Button type="submit" sx={submitButtonStyle}>Submit</Button>
+      <Button type="submit" sx={submitButtonStyle}   disabled={loading} >{loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}</Button>
 
       <Box sx={MotivationLabel}>
         <Typography variant="span" fontSize="1rem">

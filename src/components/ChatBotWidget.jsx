@@ -98,7 +98,11 @@ const ChatBotWidget = () => {
       const response = await fetch("http://localhost:5005/webhooks/rest/webhook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sender: "user", message: input }),
+        body: JSON.stringify({ 
+          sender: "user", 
+          message: input,  
+          metadata: {token: "3|bOz5PbJS8lHGSm8nyYAHbH4dT3dWsshwmE0z58rmab16dac9"} 
+        }),
       });
 
       const data = await response.json();
@@ -167,7 +171,8 @@ const ChatBotWidget = () => {
                     ...styles.messageBubble,
                     ...(msg.sender === "user" ? styles.userMessage : styles.botMessage)
                   }}>
-                    <Typography variant="body2">
+                    {/* Modification pour les retours à ligne */}
+                    <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
                       {parseMessage(msg.text)}
                     </Typography>
                   </Paper>

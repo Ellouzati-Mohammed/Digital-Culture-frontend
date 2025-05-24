@@ -49,7 +49,7 @@ import { adminDeleteButton, adminButtonContainer,adminModifyButton } from '../st
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import CoursMangement from '../components/admin/CoursManagement/CoursManagement.jsx';
-import { role } from "../services/UserRole.js";
+import { useAuth } from '../hooks/useAuth';
 import useDomaines from "../hooks/useDomains.js";
 import useCourses from "../hooks/useCourses.js";
 import { getDomainCourses } from "../services/CoursesService.js";
@@ -103,7 +103,7 @@ const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Up
 
 const Cours = ({ id, duration, cours_title, cours_description , setShowNewCoursForm , onEdit,onDelete}) => {
 
-  
+    const { role } = useAuth();
     const handleDelete = useCallback((e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -149,7 +149,7 @@ const Cours = ({ id, duration, cours_title, cours_description , setShowNewCoursF
 function AllCoursCard({deleteExistingCours,updateExistingCours,fetchCourses,courses,DomainId,loading}) {
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   const [selectedCours, setSelectedCours] = useState(null); // Pour modification
-
+  const { role } = useAuth();
   const [deleteConfirmation,setDeleteConfirmation] = useState({
     isOpen: false,
     CoursId: null,
@@ -257,7 +257,7 @@ export default function CoursDomain() {
   const [showNewCoursForm, setShowNewCoursForm] = useState(false);
   const { DomainId } = useParams(); //pour recuuprer l'id depuis l'url
   const {courses,loading,fetchCourses,createNewCours,deleteExistingCours,updateExistingCours} = useCourses();
-
+  const { role } = useAuth();
 
 
   const handleAddCours = async (formData) => {

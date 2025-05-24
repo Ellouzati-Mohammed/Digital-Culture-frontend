@@ -34,9 +34,7 @@ console.log(role)
                 <Typography variant="h2" sx={WelcomCardMotivationTitle}>
                   Explorez le Monde Numérique
                 </Typography>
-                <Typography variant="h5" sx={WelcomCardMotivationText}>
-                  10 Domaines de Connaissance à Découvrir
-                </Typography>
+                
               </Box>
             </Box>}
             {role === "admin" && (
@@ -62,10 +60,11 @@ console.log(role)
               />
             )}
             <AllDomainsCard domaines={domaines}
-  fetchDomaines={fetchDomaines}
-  deleteExistingDomaine={deleteExistingDomaine}
-  updateExistingDomaine={updateExistingDomaine}
-  loading={loading}/>
+                fetchDomaines={fetchDomaines}
+                deleteExistingDomaine={deleteExistingDomaine}
+                updateExistingDomaine={updateExistingDomaine}
+                loading={loading}
+            />
         </Box>
     )
 }

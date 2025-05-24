@@ -123,11 +123,12 @@ const DomainCard = React.memo(
 
 // AllDomainsCard Component
 function AllDomainsCard( 
-  {domaines, 
-  fetchDomaines, 
-  deleteExistingDomaine, 
-  updateExistingDomaine,
-loading} ) {
+      {domaines, 
+      fetchDomaines, 
+      deleteExistingDomaine, 
+      updateExistingDomaine,
+      loading} 
+    ) {
   const [showNewDomainForm, setShowNewDomainForm] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState(null);
 
@@ -177,7 +178,7 @@ loading} ) {
 
   return (
     
-    <Box sx={AllDomainBox}>
+    <Box sx={(!loading && domaines.length !== 0) ? AllDomainBox : {}}>
        <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
         <DialogTitle>Confirmer la suppression</DialogTitle>
         <DialogContent>
@@ -196,6 +197,7 @@ loading} ) {
           </Button>
         </DialogActions>
       </Dialog>
+      
       {domaines.map((domainItem) => (
         <Link
           key={domainItem.id}
@@ -214,6 +216,11 @@ loading} ) {
           />
         </Link>
       ))}
+      {!loading && domaines.length === 0 && (
+        <Typography variant="h6" sx={{width: '100%',display: 'block',}}>
+          Aucun domaine n'existe pour le moment.
+        </Typography>
+      )}
 
       {showNewDomainForm && (
         <DomainManagement

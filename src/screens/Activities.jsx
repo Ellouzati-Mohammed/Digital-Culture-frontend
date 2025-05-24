@@ -27,7 +27,7 @@ import { adminDeleteButton, adminButtonContainer,adminModifyButton } from '../st
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
 import ActivityManagement from "../components/admin/ActivityManagement/ActivitiesManagement.jsx";
-import { role } from "../services/UserRole.js";
+import { useAuth } from '../hooks/useAuth';
 import useActivities from "../hooks/useActivites.js";
 import { useParams } from "react-router-dom";
 
@@ -59,7 +59,7 @@ const getEmbedUrl = (url) => {
 
 const Video = ({ videoId,videoUrl,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit }) => {
   
-
+  const { role } = useAuth();
   return (<>
     <Box sx={vidioBoxStyle}>
       <iframe
@@ -89,7 +89,7 @@ const Quiz = ({ quizId,question, options,quiznumber, correctAnswer,setShowNewAct
   const [selectedValue, setSelectedValue] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-
+  const { role } = useAuth();
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
@@ -139,7 +139,7 @@ const Quiz = ({ quizId,question, options,quiznumber, correctAnswer,setShowNewAct
   );
 };
 const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,onEdit})=>{
-
+  const { role } = useAuth();
   return (
       <Box sx={pdfResource}>
           <Typography fontSize={16} fontWeight={500}>
@@ -163,7 +163,7 @@ const Pdf=({pdfId,link,setShowNewActivityForm,onType,handleDelete,handleModify,o
 
 
 function Activitie() {
-
+  const { role } = useAuth();
   const [showNewActivityForm, setShowNewActivityForm] = useState(false); // État pour afficher le formulaire
   const [selectedResourceData, setselectedResourceData] = useState(null);
   const { CoursId } = useParams(); //recupere le id du cours depuuuuit l'url

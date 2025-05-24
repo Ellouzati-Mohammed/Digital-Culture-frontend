@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   List,
@@ -38,7 +38,11 @@ import {
 
 const Sidebar = () => {
   const [openDomain, setOpenDomain] = useState(false);
-  const { domaines, loading } = useDomaines();
+  const { domaines, loading,fetchDomaines } = useDomaines();
+
+  useEffect(() => {
+    fetchDomaines();
+  }, [fetchDomaines]);
 
   const handleDomainToggle = () => {
     setOpenDomain((prevState) => !prevState);
@@ -98,7 +102,7 @@ const Sidebar = () => {
                 to={`/DomainsCours/${domainItem.id}`}
               >
                 <ListItemText
-                  primary={domainItem.title}
+                  primary={domainItem.domain_title}
                   sx={listItemTextStyle}
                 />
               </ListItem>

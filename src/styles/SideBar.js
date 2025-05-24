@@ -28,6 +28,7 @@ const nestedItemStyle = {
   borderRadius: '6px',
   mb: '2px',
   pl: '24px',
+  color : '#1E293BD9',
   position: 'relative',
   '&:before': {
     content: '""',
@@ -81,6 +82,7 @@ const listItemTextStyle = {
     pl: 2.5
   }
 };
+
 
 
 const DividerStyle={ my: 2, borderColor: '#f1f5f9' }

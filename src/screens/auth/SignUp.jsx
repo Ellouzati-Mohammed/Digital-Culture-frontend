@@ -19,8 +19,10 @@ import { formContainerStyle, titleStyle, subtitleStyle, textFieldStyle, submitBu
 import  {EmailInput,NormalInput,PasswordInput} from "../../components/ValidationInputs";
 import { API_ENDPOINTS } from "../../api/api";
 import { useAuth } from "../../hooks/useAuth";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const SignUpForm=()=>{
+      const [loading, setLoading] = useState(false);
       const [formData, setFormData] = useState({password:"",email:"",Full_Name:""});
       const [errors, setErrors] = useState({ email: "", password: "",Full_Name :"" });
       const { login } = useAuth();
@@ -44,7 +46,7 @@ const SignUpForm=()=>{
       const handleSubmit = async (event) => {
         event.preventDefault();
         const isValid = validateForm();
-    
+        setLoading(true); // Démarre le chargement
         if (isValid) {
            try {
                   const response = await fetch(API_ENDPOINTS.SignUp, {
@@ -61,10 +63,28 @@ const SignUpForm=()=>{
                     console.log("Connecté avec succès :", data);
                     login(data);
                     navigate("/"); // s'il est connecté avec succès
+                  }else {
+                    // Si erreur côté serveur
+                    if (data.error && data.message) {
+                      if (data.message.toLowerCase().includes("email")) {
+                        setErrors(prev => ({ ...prev, email: data.message }));
+                      } else {
+                        setErrors(prev => ({ ...prev, email: data.message }));
+                      }
+                    } else {
+                      setErrors(prev => ({ ...prev, email: "Erreur lors de l'inscription." }));
+                    }
                   }
                 } catch (error) {
                   console.error("Erreur réseau :", error);
+                  setErrors(prev => ({
+                    ...prev,
+                    email: "Impossible de se connecter au serveur.",
+                    password: "Impossible de se connecter au serveur.",
+                    Full_Name: "Impossible de se connecter au serveur."
+                  }));
                 }
+                setLoading(false); 
         }
       };
     return(
@@ -93,8 +113,8 @@ const SignUpForm=()=>{
                 }  
                 error={errors.password} />
              
-             <Button type="submit" sx={submitButtonStyle}>
-                Submit
+             <Button type="submit" sx={submitButtonStyle} disabled={loading}>
+                {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
              </Button>
              <Box sx={MotivationLabel}>
                 <Typography variant="span" fontSize='1rem'>
