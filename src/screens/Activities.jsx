@@ -364,7 +364,7 @@ function Activitie() {
         {activities?.activities?.quizzes.map((quizItem, index) => {
 
           const { answers, correct } = extractQuizData(quizItem.quiz.answers);
-          return  <Quiz key={`quiz-${quizItem.id}`} quizId={quizItem.id} quiznumber={index} question={quizItem.quiz.question} options={answers} correctAnswer={correct} handleDelete={(e)=>handleDelete(e,'quiz',quizItem.id) } 
+          return  <Quiz key={`quiz-${quizItem.id}`} quizId={quizItem.id} quiznumber={index+1} question={quizItem.quiz.question} options={answers} correctAnswer={correct} handleDelete={(e)=>handleDelete(e,'quiz',quizItem.id) } 
             handleModify={(e) =>  handleModify(e ,{
               id: quizItem.id,
               activity_type: quizItem.activity_type,

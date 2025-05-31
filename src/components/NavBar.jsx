@@ -55,16 +55,7 @@ const Navbar = () => {
               </Button>
             </NavLink>
   
-            <NavLink to="/courses" style={{ textDecoration: 'none' }} activeClassName="active">
-              <Button color="inherit" sx={ButtonNavigation}>
-                Courses
-              </Button>
-            </NavLink>
-            <NavLink to="/activities" style={{ textDecoration: 'none' }} activeClassName="active">
-              <Button color="inherit" sx={ButtonNavigation}>
-                Activities
-              </Button>
-            </NavLink>
+            
           </Box>
         </Box>
 

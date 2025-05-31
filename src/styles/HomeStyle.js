@@ -17,7 +17,7 @@ const HomeBox={
     overflow: 'hidden',
     borderRadius: '16px',
     height: '200px',
-    background: 'linear-gradient(135deg,rgba(41, 44, 255, 0.35) 0%,rgb(0, 255, 106),rgb(200, 92, 246),rgb(255, 0, 179) 100%)'
+    background: '#6D6DFB'
   }
   
   const WelcomCardMotivationBox={ 

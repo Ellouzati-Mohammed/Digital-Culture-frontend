@@ -15,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import SendIcon from "@mui/icons-material/Send";
 import { styles, animations } from "../styles/ChatBotsStyle";
-
+import { useAuth } from '../hooks/useAuth';
 const ChatBotWidget = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -23,6 +23,7 @@ const ChatBotWidget = () => {
   const [isBotResponding, setIsBotResponding] = useState(false);
   const chatRef = useRef(null);
   const buttonRef = useRef(null);
+  const { token } = useAuth();
 
   const toggleChat = () => setOpen(!open);
 
@@ -101,7 +102,7 @@ const ChatBotWidget = () => {
         body: JSON.stringify({ 
           sender: "user", 
           message: input,  
-          metadata: {token: "3|bOz5PbJS8lHGSm8nyYAHbH4dT3dWsshwmE0z58rmab16dac9"} 
+          metadata: {token: token} 
         }),
       });
 
