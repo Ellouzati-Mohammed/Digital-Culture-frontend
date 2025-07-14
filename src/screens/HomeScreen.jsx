@@ -19,7 +19,6 @@ function HomeScreen() {
   const [showNewDomainForm, setShowNewDomainForm] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [renderError, setRenderError] = useState(null);
   
   const { 
     domaines, 
@@ -84,68 +83,55 @@ function HomeScreen() {
     }
   }, [deleteExistingDomaine, fetchDomaines]);
 
-  let content;
-  try {
-    content = (
-      <Box sx={HomeBox}>
-        {!(role.toLowerCase() === 'admin') && (
-          <Box sx={WelcomCardMotivation}>
-            <Box sx={WelcomCardMotivationBox}>
-              <Typography variant="h2" sx={WelcomCardMotivationTitle}>
-                Explorez le Monde Numérique
-              </Typography>
-            </Box>
-          </Box>
-        )}
-        {role === "admin" && (
-          <Box sx={headerManagementTitle}> 
-            <Typography variant="h3" sx={titleManagementtxt}>
-              Gestion des Domaines
+  return (
+    <Box sx={HomeBox}>
+      {!(role.toLowerCase() === 'admin') && (
+        <Box sx={WelcomCardMotivation}>
+          <Box sx={WelcomCardMotivationBox}>
+            <Typography variant="h2" sx={WelcomCardMotivationTitle}>
+              Explorez le Monde Numérique
             </Typography>
-            <Button
-              variant="contained"
-              startIcon={<AddCircleOutlineOutlinedIcon />}
-              sx={addButton}
-              onClick={() => {
-                setSelectedDomain(null);
-                setShowNewDomainForm(true);
-              }}
-              disabled={isLoading}
-            >
-              Nouveau Domaine
-            </Button>
           </Box>
-        )}
-        {showNewDomainForm && (
-          <DomainManagement 
-            setShowNewDomainForm={setShowNewDomainForm} 
-            onSubmit={selectedDomain ? handleUpdateDomain : handleAddDomain} 
-            domainData={selectedDomain}
-          />
-        )}
-        <AllDomainsCard 
-          domaines={domaines}
-          isLoading={isLoading}
-          onEditDomain={setSelectedDomain}
-          onDeleteDomain={handleDeleteDomain}
-          onShowForm={() => setShowNewDomainForm(true)}
+        </Box>
+      )}
+      
+      {role === "admin" && (
+        <Box sx={headerManagementTitle}> 
+          <Typography variant="h3" sx={titleManagementtxt}>
+            Gestion des Domaines
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+            sx={addButton}
+            onClick={() => {
+              setSelectedDomain(null);
+              setShowNewDomainForm(true);
+            }}
+            disabled={isLoading}
+          >
+            Nouveau Domaine
+          </Button>
+        </Box>
+      )}
+
+      {showNewDomainForm && (
+        <DomainManagement 
+          setShowNewDomainForm={setShowNewDomainForm} 
+          onSubmit={selectedDomain ? handleUpdateDomain : handleAddDomain} 
+          domainData={selectedDomain}
         />
-      </Box>
-    );
-  } catch (error) {
-    setRenderError(error);
-  }
-
-  if (renderError) {
-    return (
-      <Box sx={{ p: 4, color: 'red' }}>
-        <Typography variant="h5">Une erreur est survenue lors de l'affichage de la page.</Typography>
-        <Typography variant="body1">{renderError.message}</Typography>
-      </Box>
-    );
-  }
-
-  return content;
+      )}
+      
+      <AllDomainsCard 
+        domaines={domaines}
+        isLoading={isLoading}
+        onEditDomain={setSelectedDomain}
+        onDeleteDomain={handleDeleteDomain}
+        onShowForm={() => setShowNewDomainForm(true)}
+      />
+    </Box>
+  );
 }
 
 export default HomeScreen;
