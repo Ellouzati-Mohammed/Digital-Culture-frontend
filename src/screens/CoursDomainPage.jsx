@@ -78,24 +78,7 @@ const SelctedDomainInfo = ({ nbrCours, domain_Title, domain_Description, last_Up
         </Typography>
       </Box>
       <Box sx={SelectedDomainGlobalInfoContainer}>
-        <Box sx={SelectedDomainGlobalInfoItem}>
-          <Typography sx={SelectedDomainGlobalInfoText}>
-            <AccessTimeIcon sx={{ fontSize: "16px", mr: '4px' }} />
-            Last updated {timeDifference} ago
-          </Typography>
-        </Box>
-        <Box sx={SelectedDomainGlobalInfoItem}>
-          <Typography sx={SelectedDomainGlobalInfoText}>
-            <CalendarTodayIcon sx={{ fontSize: "14px", mr: '4px' }} />
-            Published {publiched_Date}
-          </Typography>
-        </Box>
-        <Box sx={SelectedDomainGlobalInfoItem}>
-          <Typography sx={SelectedDomainGlobalInfoText}>
-            <PeopleOutlineIcon sx={{ fontSize: "16px", mr: '4px' }} />
-            {nbr_Enroll} enrolled
-          </Typography>
-        </Box>
+        
       </Box>
     </Box>
   );
@@ -297,13 +280,14 @@ export default function CoursDomain() {
           />
         )}
         <SelctedDomainInfo
-          nbrCours={10}
+          nbrCours={courses.courses?.length || 0}
           domain_Title={courses.domain_title}
           domain_Description={courses.domain_description}
           last_Update={courses.updated_at}
           publiched_Date={courses.created_at}
           nbr_Enroll={1500}
         />
+        {console.log(courses)}
        <AllCoursCard courses={courses} DomainId={DomainId} fetchCourses={fetchCourses} deleteExistingCours={deleteExistingCours} updateExistingCours={updateExistingCours}loading={loading} />
       </Box>
     </Container>

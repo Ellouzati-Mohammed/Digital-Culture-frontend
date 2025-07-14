@@ -1,5 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Box, Typography, Chip, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import React, { memo, useState } from "react";
+import { 
+  Box, 
+  Typography, 
+  Chip, 
+  Button, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogContentText, 
+  DialogActions,
+  Skeleton
+} from "@mui/material";
 import { EmojiEvents } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -11,175 +22,226 @@ import {
   DomainTitle, 
   MainDomainCard, 
   MainDomaineCardBox, 
-  NbrCoursChip, 
   LevelCoursChip, 
   DomainDecriptionCard, 
   AllDomainBox, 
   LinkCardDomain 
 } from "../styles/DomainCardStyle.js";
-import { adminDeleteButton, adminButtonContainer, adminModifyButton } from "../styles/ManagementStyle.js";
-import DomainManagement from "./admin/DomainManagement/DomainManagement.jsx";
-import useDomaines from "../hooks/useDomains.js";
+import { 
+  adminDeleteButton, 
+  adminButtonContainer, 
+  adminModifyButton 
+} from "../styles/ManagementStyle.js";
 import { useAuth } from '../hooks/useAuth';
 
+// Composant optimisé pour éviter les re-renders inutiles
+const DomainCard = memo(({
+  domainId,
+  domain_title,
+  domain_description,
+  level,
+  domain_image_url,
+  onEdit,
+  onDelete,
+  isLoading
+}) => {
+  const { role } = useAuth();
+  const [imageLoaded, setImageLoaded] = useState(false);
 
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete(domainId, domain_title);
+  };
 
-// DomainCard Component
-const DomainCard = React.memo(
-  ({
-    domainId,
-    domain_title,
-    domain_description,
-    level,
-    domain_image_url,
-    setShowNewDomainForm,
-    onEdit,
-    onDelete
-  }) => {
-    const [courseCount] = useState(40); 
-    const { role } = useAuth();
+  const handleModify = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEdit({
+      id: domainId,
+      domain_title: domain_title,
+      domain_description: domain_description,
+      level: level,
+      domain_image_url: domain_image_url,
+    });
+  };
+  const [imageError, setImageError] = useState(false);
 
-    const handleDelete = useCallback((e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      onDelete(domainId, domain_title);
-    }, [domainId, onDelete,domain_title]);
+  return (
+   <Box key={domainId} sx={CardContainerStyle}>
+      <Box sx={HeaderSecCard}>
+        {isLoading ? (
+          <Skeleton variant="rectangular" width="100%" height="100%" />
+        ) : (
+          <>
+            {!imageLoaded && !imageError && (
+              <Skeleton variant="rectangular" width="100%" height="100%" />
+            )}
 
-    
+            {!imageError ? (
+              <img
+                src={domain_image_url}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0
+                }}
+                onLoad={() => {
+                  setImageLoaded(true);
+                }}
+                onError={() => {
+                  console.error("Erreur chargement image :", domain_image_url);
+                  setImageError(true); // Cacher l’image cassée
+                }}
+                loading="lazy"
+              />
+            ) : (
+              // Fallback visuel si image cassée (peut être remplacé par une image par défaut)
+              <Box
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: '#ccc',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0
+                }}
+              />
+            )}
 
-    const handleModify = useCallback((e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      onEdit({
-        id: domainId,
-        domain_title: domain_title,
-        domain_description: domain_description,
-        level: level,
-        domain_image_url: domain_image_url,
-      });
-      setShowNewDomainForm(true);
-    }, [domainId, domain_title, domain_description, level, domain_image_url, setShowNewDomainForm, onEdit]);
-
-
-    return (
-      <Box key={domainId} sx={CardContainerStyle} >
-        <Box sx={HeaderSecCard(domain_image_url)}>
-          <Box sx={HeaderSecCardContainer}>
-            <Typography variant="h5" sx={DomainTitle}>
-              {domain_title.split("(")[0].trim()}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box sx={MainDomainCard}>
-          <Box sx={MainDomaineCardBox}>
-            <Chip
-              label={`${courseCount} courses`}
-              size="small"
-              icon={<EmojiEvents />}
-              sx={NbrCoursChip}
-            />
-            <Chip label={level} size="small" sx={LevelCoursChip} />
-          </Box>
-
-          <Typography variant="body2" sx={DomainDecriptionCard}>
-            {domain_description}
-          </Typography>
-
-          {/** Only show buttons for admin */}
-          {role.toLowerCase() === "admin" && (
-            <Box sx={adminButtonContainer}>
-              <Button
-                onClick={handleModify}
-                sx={adminModifyButton}
-                startIcon={<EditOutlinedIcon />}
-              >
-                Modify
-              </Button>
-              <Button
-                onClick={handleDelete}
-                sx={adminDeleteButton}
-                startIcon={<DeleteOutlinedIcon />}
-              >
-                Delete
-              </Button>
+            <Box sx={HeaderSecCardContainer}>
+              <Typography variant="h5" sx={DomainTitle}>
+                {domain_title.split("(")[0].trim()}
+              </Typography>
             </Box>
+          </>
+        )}
+      </Box>
+
+      <Box sx={MainDomainCard}>
+        <Box sx={MainDomaineCardBox}>
+          {isLoading ? (
+            <Skeleton variant="rectangular" width={60} height={24} />
+          ) : (
+            <Chip label={level} size="small" sx={LevelCoursChip} />
           )}
         </Box>
+
+        <Typography variant="body2" sx={DomainDecriptionCard}>
+          {isLoading ? (
+            <>
+              <Skeleton />
+              <Skeleton width="80%" />
+            </>
+          ) : (
+            domain_description
+          )}
+        </Typography>
+
+        {role.toLowerCase() === "admin" && !isLoading && (
+          <Box sx={adminButtonContainer}>
+            <Button
+              onClick={handleModify}
+              sx={adminModifyButton}
+              startIcon={<EditOutlinedIcon />}
+            >
+              Modifier
+            </Button>
+            <Button
+              onClick={handleDelete}
+              sx={adminDeleteButton}
+              startIcon={<DeleteOutlinedIcon />}
+            >
+              Supprimer
+            </Button>
+          </Box>
+        )}
       </Box>
-    );
-  },
-  (prevProps, nextProps) => {
-    // Avoid unnecessary re-renders when props do not change
-    return (
-      prevProps.domainId === nextProps.domainId &&
-      prevProps.domain_title === nextProps.domain_title &&
-      prevProps.domain_description === nextProps.domain_description &&
-      prevProps.level === nextProps.level &&
-      prevProps.domain_image_url === nextProps.domain_image_url
-    );
-  }
-);
+    </Box>
+  );
+}, (prevProps, nextProps) => {
+  // Optimisation: éviter les re-renders inutiles
+  return (
+    prevProps.domainId === nextProps.domainId &&
+    prevProps.domain_title === nextProps.domain_title &&
+    prevProps.domain_description === nextProps.domain_description &&
+    prevProps.level === nextProps.level &&
+    prevProps.domain_image_url === nextProps.domain_image_url &&
+    prevProps.isLoading === nextProps.isLoading
+  );
+});
 
-// AllDomainsCard Component
-function AllDomainsCard( 
-      {domaines, 
-      fetchDomaines, 
-      deleteExistingDomaine, 
-      updateExistingDomaine,
-      loading} 
-    ) {
-  const [showNewDomainForm, setShowNewDomainForm] = useState(false);
-  const [selectedDomain, setSelectedDomain] = useState(null);
-
-  const [deleteConfirmation,setDeleteConfirmation] = useState({
+// Composant principal
+function AllDomainsCard({ 
+  domaines, 
+  isLoading,
+  onEditDomain,
+  onDeleteDomain,
+  onShowForm
+}) {
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
     isOpen: false,
     domainId: null,
-    domainTitle:''
-  }); 
+    domainTitle: ''
+  });
 
-  useEffect(() => {
-    fetchDomaines(); // Chargement unique des domaines au montage
-  }, [fetchDomaines]);
-
-
-  const handleDeleteRequest = useCallback((domainId, domainTitle) => {
+  const handleDeleteRequest = (domainId, domainTitle) => {
     setDeleteConfirmation({
       isOpen: true,
       domainId,
       domainTitle
     });
-  }, []);
+  };
 
-  const handleModifyDomain = useCallback(async (formData) => {
-   
-    try {
-      await updateExistingDomaine(formData.id,formData); 
-      await fetchDomaines();
-      setShowNewDomainForm(false);
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour du domaine : ", error);
-    }
-  }, [fetchDomaines, setShowNewDomainForm]);
-  
-  const handleConfirmDelete = useCallback(async () => {
+  const handleConfirmDelete = () => {
     if (deleteConfirmation.domainId) {
-      try {
-        await deleteExistingDomaine(deleteConfirmation.domainId);
-        //await fetchDomaines();
-      } finally {
-        setDeleteConfirmation({ isOpen: false, domainId: null,domainTitle:'' });
-      }
+      onDeleteDomain(deleteConfirmation.domainId);
+      setDeleteConfirmation({ 
+        isOpen: false, 
+        domainId: null, 
+        domainTitle: '' 
+      });
     }
-  }, [deleteConfirmation]);
-  const handleCancelDelete = useCallback(() => {
-    setDeleteConfirmation({ isOpen: false, domainId: null ,domainTitle:''});
-  }, []);
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ 
+      isOpen: false, 
+      domainId: null, 
+      domainTitle: '' 
+    });
+  };
+
+  // Affichage des squelettes pendant le chargement
+  if (isLoading) {
+    return (
+      <Box sx={AllDomainBox}>
+        {[...Array(6)].map((_, index) => (
+          <Box key={index} sx={CardContainerStyle}>
+            <Skeleton variant="rectangular" width="100%" height={140} />
+            <Box sx={{ p: 2 }}>
+              <Skeleton width="60%" height={24} />
+              <Skeleton width="40%" height={20} sx={{ mt: 1 }} />
+              <Box sx={{ display: 'flex', mt: 2 }}>
+                <Skeleton width={80} height={36} sx={{ mr: 1 }} />
+                <Skeleton width={80} height={36} />
+              </Box>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+    );
+  }
 
   return (
-    
-    <Box sx={(!loading && domaines.length !== 0) ? AllDomainBox : {}}>
-       <Dialog open={deleteConfirmation.isOpen} onClose={handleCancelDelete} >
+    <Box sx={AllDomainBox}>
+      <Dialog 
+        open={deleteConfirmation.isOpen} 
+        onClose={handleCancelDelete}
+      >
         <DialogTitle>Confirmer la suppression</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -191,45 +253,41 @@ function AllDomainsCard(
           <Button 
             onClick={handleConfirmDelete} 
             color="error"
-            disabled={loading}
           >
             Confirmer
           </Button>
         </DialogActions>
       </Dialog>
       
-      {domaines.map((domainItem) => (
-        <Link
-          key={domainItem.id}
-          to={`/DomainsCours/${domainItem.id}`}
-          style={LinkCardDomain}
-        >
-          <DomainCard
-            domainId={domainItem.id}
-            domain_title={domainItem.domain_title}
-            level={domainItem.level}
-            domain_image_url={domainItem.domain_image_url}
-            domain_description={domainItem.domain_description}
-            setShowNewDomainForm={setShowNewDomainForm}
-            onEdit={setSelectedDomain}
-            onDelete={handleDeleteRequest}
-          />
-        </Link>
-      ))}
-      {!loading && domaines.length === 0 && (
-        <Typography variant="h6" sx={{width: '100%',display: 'block',}}>
+      {domaines.length === 0 && !isLoading ? (
+        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', py: 4 }}>
           Aucun domaine n'existe pour le moment.
         </Typography>
-      )}
-
-      {showNewDomainForm && (
-        <DomainManagement
-          setShowNewDomainForm={setShowNewDomainForm}
-          onSubmit={handleModifyDomain}
-          domainData={selectedDomain}
-        />
+      ) : (
+        domaines.map((domainItem) => (
+          <Link
+            key={domainItem.id}
+            to={`/DomainsCours/${domainItem.id}`}
+            style={LinkCardDomain}
+          >
+            <DomainCard
+              domainId={domainItem.id}
+              domain_title={domainItem.domain_title}
+              level={domainItem.level}
+              domain_image_url={domainItem.domain_image_url}
+              domain_description={domainItem.domain_description}
+              onEdit={(domain) => {
+                onEditDomain(domain);
+                onShowForm();
+              }}
+              onDelete={handleDeleteRequest}
+              isLoading={isLoading}
+            />
+          </Link>
+        ))
       )}
     </Box>
   );
 }
+
 export default AllDomainsCard;

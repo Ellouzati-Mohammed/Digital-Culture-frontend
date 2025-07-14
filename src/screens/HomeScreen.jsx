@@ -1,71 +1,151 @@
+import React, { useState, useEffect, useCallback } from "react";
 import AllDomainsCard from "../components/DomainCard";
-
-import { Box, Typography, Chip,Button } from "@mui/material";
-import {HomeBox,WelcomCardMotivation,WelcomCardMotivationBox,WelcomCardMotivationTitle,WelcomCardMotivationText} from '../styles/HomeStyle'
-import React, { lazy, useEffect, useMemo, useState } from "react";
+import { Box, Typography, Button } from "@mui/material";
+import {
+  HomeBox,
+  WelcomCardMotivation,
+  WelcomCardMotivationBox,
+  WelcomCardMotivationTitle
+} from '../styles/HomeStyle';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import {headerManagementTitle,titleManagementtxt,addButton} from '../styles/ManagementStyle'
-import DomainMangement from "../components/admin/DomainManagement/DomainManagement";
+import { headerManagementTitle, titleManagementtxt, addButton } from '../styles/ManagementStyle';
+import DomainManagement from "../components/admin/DomainManagement/DomainManagement";
 import { useAuth } from '../hooks/useAuth';
 import useDomaines from "../hooks/useDomains";
+import Skeleton from '@mui/material/Skeleton';
 
-
-function HomeScreen(){
-
+function HomeScreen() {
   const { role } = useAuth();
-  const [showNewDomainForm, setShowNewDomainForm] = useState(false); // État pour afficher le formulaire
-  const { domaines, loading, fetchDomaines,updateExistingDomaine,createNewDomaine,deleteExistingDomaine } = useDomaines();
+  const [showNewDomainForm, setShowNewDomainForm] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [renderError, setRenderError] = useState(null);
+  
+  const { 
+    domaines, 
+    fetchDomaines, 
+    createNewDomaine, 
+    updateExistingDomaine, 
+    deleteExistingDomaine 
+  } = useDomaines();
 
-  const handleAddDomain = async (formData) => {
+  // Chargement initial avec gestion d'état de chargement
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        await fetchDomaines();
+      } catch (error) {
+        console.error("Erreur de chargement des domaines", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [fetchDomaines]);
 
+  const handleAddDomain = useCallback(async (formData) => {
     try {
-      await createNewDomaine(formData); 
+      setIsLoading(true);
+      await createNewDomaine(formData);
       await fetchDomaines();
       setShowNewDomainForm(false);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du domaine : ", error);
+      console.error("Erreur lors de la création du domaine : ", error);
+    } finally {
+      setIsLoading(false);
     }
-  };
-console.log(role)
-    return (
-        <Box sx={HomeBox}>
-            {!(role.toLowerCase()==='admin') && <Box sx={WelcomCardMotivation}>
-              <Box sx={WelcomCardMotivationBox}>
-                <Typography variant="h2" sx={WelcomCardMotivationTitle}>
-                  Explorez le Monde Numérique
-                </Typography>
-                
-              </Box>
-            </Box>}
-            {role === "admin" && (
-              <Box sx={headerManagementTitle}> 
-                <Typography variant="h3" sx={titleManagementtxt}>
-                  Gestion des Domaines
-                </Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<AddCircleOutlineOutlinedIcon />}
-                  sx={addButton}
-                  onClick={() => setShowNewDomainForm(true)}
-                >
-                  Nouveau Domaine
-                </Button>
-              </Box>
-            )}
+  }, [createNewDomaine, fetchDomaines]);
 
-            {role === "admin" && showNewDomainForm && (
-              <DomainMangement 
-                setShowNewDomainForm={setShowNewDomainForm} 
-                onSubmit={handleAddDomain} 
-              />
-            )}
-            <AllDomainsCard domaines={domaines}
-                fetchDomaines={fetchDomaines}
-                deleteExistingDomaine={deleteExistingDomaine}
-                updateExistingDomaine={updateExistingDomaine}
-                loading={loading}
-            />
-        </Box>
-    )
+  const handleUpdateDomain = useCallback(async (formData) => {
+    try {
+      setIsLoading(true);
+      await updateExistingDomaine(formData.id, formData);
+      await fetchDomaines();
+      setShowNewDomainForm(false);
+      setSelectedDomain(null);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du domaine : ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [updateExistingDomaine, fetchDomaines]);
+
+  const handleDeleteDomain = useCallback(async (domainId) => {
+    try {
+      setIsLoading(true);
+      await deleteExistingDomaine(domainId);
+      await fetchDomaines();
+    } catch (error) {
+      console.error("Erreur lors de la suppression du domaine : ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [deleteExistingDomaine, fetchDomaines]);
+
+  let content;
+  try {
+    content = (
+      <Box sx={HomeBox}>
+        {!(role.toLowerCase() === 'admin') && (
+          <Box sx={WelcomCardMotivation}>
+            <Box sx={WelcomCardMotivationBox}>
+              <Typography variant="h2" sx={WelcomCardMotivationTitle}>
+                Explorez le Monde Numérique
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        {role === "admin" && (
+          <Box sx={headerManagementTitle}> 
+            <Typography variant="h3" sx={titleManagementtxt}>
+              Gestion des Domaines
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<AddCircleOutlineOutlinedIcon />}
+              sx={addButton}
+              onClick={() => {
+                setSelectedDomain(null);
+                setShowNewDomainForm(true);
+              }}
+              disabled={isLoading}
+            >
+              Nouveau Domaine
+            </Button>
+          </Box>
+        )}
+        {showNewDomainForm && (
+          <DomainManagement 
+            setShowNewDomainForm={setShowNewDomainForm} 
+            onSubmit={selectedDomain ? handleUpdateDomain : handleAddDomain} 
+            domainData={selectedDomain}
+          />
+        )}
+        <AllDomainsCard 
+          domaines={domaines}
+          isLoading={isLoading}
+          onEditDomain={setSelectedDomain}
+          onDeleteDomain={handleDeleteDomain}
+          onShowForm={() => setShowNewDomainForm(true)}
+        />
+      </Box>
+    );
+  } catch (error) {
+    setRenderError(error);
+  }
+
+  if (renderError) {
+    return (
+      <Box sx={{ p: 4, color: 'red' }}>
+        <Typography variant="h5">Une erreur est survenue lors de l'affichage de la page.</Typography>
+        <Typography variant="body1">{renderError.message}</Typography>
+      </Box>
+    );
+  }
+
+  return content;
 }
+
 export default HomeScreen;
